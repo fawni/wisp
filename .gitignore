@@ -1,0 +1,9 @@
+# code
+.vscode/
+.idea/
+
+# rust
+/target
+
+# production
+.env
