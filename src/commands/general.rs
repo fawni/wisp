@@ -28,6 +28,7 @@ pub async fn avatar(
         None => None,
     };
     let mut description = "(=^ ◡ ^=)".to_string();
+    let mut color = serenity::Color::from(ACCENT_COLOR);
     let avatar = match &member {
         Some(member) => {
             description = match member.avatar_url() {
@@ -43,6 +44,9 @@ pub async fn avatar(
                     member.user.face()
                 ),
             };
+            if let Some(c) = member.colour(ctx.discord()) {
+                color = c;
+            }
             member.face()
         }
         None => user.face(),
@@ -53,7 +57,7 @@ pub async fn avatar(
             r.author(|a| a.name(user.tag()).icon_url(&avatar))
                 .description(description)
                 .image(avatar)
-                .color(serenity::Color::from(ACCENT_COLOR))
+                .color(color)
         })
     })
     .await?;
