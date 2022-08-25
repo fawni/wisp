@@ -1,17 +1,5 @@
-use crate::{constants::ACCENT_COLOR, Context, Error};
+use crate::{config::ACCENT_COLOR, Context, Error};
 use poise::serenity_prelude::{self as serenity};
-use tokio::time::Instant;
-
-/// ping pong
-#[poise::command(prefix_command, slash_command)]
-pub async fn ping(ctx: Context<'_>) -> Result<(), Error> {
-    let start = Instant::now();
-    let msg = ctx.send(|r| r.content("( =ω= ) ")).await?;
-    let duration = start.elapsed().as_millis();
-    msg.edit(ctx, |r| r.content(format!("( =ω= ) `{}ms`", duration)))
-        .await?;
-    Ok(())
-}
 
 /// displays a user's avatar
 #[poise::command(prefix_command, slash_command)]
@@ -27,8 +15,12 @@ pub async fn avatar(
         },
         None => None,
     };
-    let mut description = "(=^ ◡ ^=)".to_string();
-    let mut color = serenity::Color::from(ACCENT_COLOR);
+    let mut description = format!(
+        "[default]({}), [user]({})",
+        user.default_avatar_url(),
+        user.face()
+    );
+    let mut color = serenity::Color::new(*ACCENT_COLOR);
     let avatar = match &member {
         Some(member) => {
             description = match member.avatar_url() {
@@ -38,11 +30,7 @@ pub async fn avatar(
                     server_avatar,
                     member.user.face()
                 ),
-                None => format!(
-                    "[default]({}), [user]({})",
-                    member.user.default_avatar_url(),
-                    member.user.face()
-                ),
+                None => description,
             };
             if let Some(c) = member.colour(ctx.discord()) {
                 color = c;

@@ -1,3 +1,4 @@
+use config::PREFIX;
 use paris::{info, success};
 use poise::serenity_prelude::{self as serenity, Activity, OnlineStatus};
 use std::time::Duration;
@@ -7,8 +8,11 @@ type Context<'a> = poise::Context<'a, Data, Error>;
 pub struct Data {}
 
 mod commands;
-mod constants;
-use commands::*;
+mod config;
+use commands::{
+    misc::{avatar::*, ping::*},
+    owner::register::*,
+};
 
 async fn event_listener(
     ctx: &serenity::Context,
@@ -18,16 +22,15 @@ async fn event_listener(
 ) -> Result<(), Error> {
     #[allow(clippy::single_match)]
     match event {
-        poise::Event::Ready { data_about_bot } => {
+        poise::Event::Ready {
+            data_about_bot: bot,
+        } => {
             ctx.set_presence(
                 Some(Activity::listening("you, cutie <3")),
                 OnlineStatus::DoNotDisturb,
             )
             .await;
-            success!(
-                "<bold>{}</> is <green>connected!</>",
-                data_about_bot.user.name
-            );
+            success!("<bold>{}</> is <green>connected!</>", bot.user.name);
         }
         _ => {}
     }
@@ -37,14 +40,14 @@ async fn event_listener(
 
 #[tokio::main]
 async fn main() -> color_eyre::Result<()> {
-    color_eyre::install()?;
     kankyo::init()?;
+    color_eyre::install()?;
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![owner::register(), general::ping(), general::avatar()],
+            commands: vec![register(), ping(), avatar()],
             prefix_options: poise::PrefixFrameworkOptions {
-                prefix: Some("~".into()),
+                prefix: Some(PREFIX.to_string()),
                 edit_tracker: Some(poise::EditTracker::for_timespan(Duration::from_secs(3600))),
                 ..Default::default()
             },

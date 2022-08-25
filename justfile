@@ -11,7 +11,3 @@ build:
 # Runs clippy
 check:
     cargo clippy --locked -- -D warnings
-
-# Dev
-dev:
-    cargo run
