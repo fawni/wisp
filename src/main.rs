@@ -11,7 +11,7 @@ mod commands;
 mod config;
 use commands::{
     misc::{avatar::*, ping::*},
-    owner::register::*,
+    owner::{echo::*, register::*},
 };
 
 async fn event_listener(
@@ -45,7 +45,7 @@ async fn main() -> color_eyre::Result<()> {
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![register(), ping(), avatar()],
+            commands: vec![register(), ping(), avatar(), echo()],
             prefix_options: poise::PrefixFrameworkOptions {
                 prefix: Some(PREFIX.to_string()),
                 edit_tracker: Some(poise::EditTracker::for_timespan(Duration::from_secs(3600))),

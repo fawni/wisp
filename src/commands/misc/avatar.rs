@@ -2,7 +2,7 @@ use crate::{config::ACCENT_COLOR, Context, Error};
 use poise::serenity_prelude::{self as serenity};
 
 /// displays a user's avatar
-#[poise::command(prefix_command, slash_command)]
+#[poise::command(prefix_command, slash_command, aliases("av"))]
 pub async fn avatar(
     ctx: Context<'_>,
     #[description = "user whose avatar will be displayed"] user: Option<serenity::User>,
