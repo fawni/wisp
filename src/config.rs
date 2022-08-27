@@ -15,6 +15,5 @@ pub fn load(file: &str) -> color_eyre::Result<Config> {
 lazy_static! {
     static ref CONFIG: Config = load("config.toml").expect("failed to load config.toml");
     pub static ref PREFIX: &'static str = &CONFIG.prefix;
-    pub static ref ACCENT_COLOR: u32 =
-        u32::from_str_radix(CONFIG.accent_color.trim_start_matches("0x"), 16).unwrap();
+    pub static ref ACCENT_COLOR: u32 = u32::from_str_radix(&CONFIG.accent_color, 16).unwrap();
 }
