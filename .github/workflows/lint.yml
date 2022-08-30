@@ -1,5 +1,8 @@
 name: lint
-on: push
+on:
+  push:
+    paths:
+      - "**.rs"
 
 jobs:
   lint:
@@ -7,12 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: setup rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
           components: clippy
+
       - uses: extractions/setup-just@v1
+
       - name: run clippy
         run: just check
