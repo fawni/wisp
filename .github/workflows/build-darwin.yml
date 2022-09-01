@@ -1,4 +1,4 @@
-name: build
+name: build darwin
 on:
   push:
     paths:
