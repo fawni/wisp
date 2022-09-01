@@ -1,8 +1,5 @@
 name: lint
-on:
-  push:
-    paths:
-      - "**.rs"
+on: push
 
 jobs:
   lint:

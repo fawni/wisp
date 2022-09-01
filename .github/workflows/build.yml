@@ -1,4 +1,8 @@
-on: push
+name: build
+on:
+  push:
+    paths:
+      - "**.rs"
 
 jobs:
   build:
