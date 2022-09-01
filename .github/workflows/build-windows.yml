@@ -1,0 +1,31 @@
+name: build
+on:
+  push:
+    paths:
+      - "**.rs"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: build ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: compile and build
+        uses: rust-build/rust-build.action@v1.3.2
+        id: build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          RUSTTARGET: x86_64-pc-windows-gnu
+          ARCHIVE_TYPES: zip
+          EXTRA_FILES: "README.md LICENSE config.example.toml .env.example"
+          UPLOAD_MODE: none
+          MINIFY: true
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Binary
+          path: ${{ steps.build.outputs.BUILT_ARCHIVE }}

@@ -9,16 +9,6 @@ jobs:
   build:
     name: build ${{ matrix.target }}
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - target: x86_64-pc-windows-gnu
-            archive: zip
-          - target: x86_64-unknown-linux-musl
-            archive: tar.gz tar.xz
-          - target: x86_64-apple-darwin
-            archive: zip
     steps:
       - uses: actions/checkout@master
 
@@ -28,9 +18,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          RUSTTARGET: ${{ matrix.target }}
-          ARCHIVE_TYPES: ${{ matrix.archive }}
-          EXTRA_FILES: "README.md LICENSE"
+          RUSTTARGET: x86_64-unknown-linux-musl
+          ARCHIVE_TYPES: tar.gz tar.xz
+          EXTRA_FILES: "README.md LICENSE config.example.toml .env.example"
           UPLOAD_MODE: none
           MINIFY: true
 
@@ -38,6 +28,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Binary
-          path: |
-            ${{ steps.build.outputs.BUILT_ARCHIVE }}
-            ${{ steps.build.outputs.BUILT_CHECKSUM }}
+          path: ${{ steps.build.outputs.BUILT_ARCHIVE }}
