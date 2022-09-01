@@ -63,9 +63,13 @@ async fn main() -> color_eyre::Result<()> {
             post_command: |ctx| {
                 Box::pin(async move {
                     let location = match ctx.guild() {
-                        Some(guild) => {
-                            format!("<magenta>{}</> (<italic>{}</>)", guild.name, guild.id)
-                        }
+                        Some(guild) => match ctx.channel_id().name(&ctx.discord().cache).await {
+                            Some(channel) => format!(
+                                "<magenta>#{}, {}</> (<italic>{}</>)",
+                                channel, guild.name, guild.id
+                            ),
+                            None => format!("<magenta>{}</> (<italic>{}</>)", guild.name, guild.id),
+                        },
                         None => format!("<magenta>{}'s dms</>", ctx.author().tag()),
                     };
                     info!(
