@@ -10,7 +10,7 @@ pub struct Data {}
 mod commands;
 mod config;
 use commands::{
-    misc::{avatar::*, ping::*},
+    misc::{avatar::*, cute::*, ping::*, webm::*},
     moderation::clear::*,
     owner::{echo::*, register::*},
 };
@@ -46,7 +46,15 @@ async fn main() -> color_eyre::Result<()> {
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![register(), ping(), avatar(), echo(), clear()],
+            commands: vec![
+                register(),
+                ping(),
+                avatar(),
+                echo(),
+                clear(),
+                cute(),
+                webm(),
+            ],
             prefix_options: poise::PrefixFrameworkOptions {
                 prefix: Some(PREFIX.to_string()),
                 edit_tracker: Some(poise::EditTracker::for_timespan(Duration::from_secs(3600))),
