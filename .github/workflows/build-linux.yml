@@ -27,5 +27,5 @@ jobs:
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: Binary
+          name: wisp
           path: ${{ steps.build.outputs.BUILT_ARCHIVE }}
