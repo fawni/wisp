@@ -8,7 +8,7 @@ pub struct Config {
 }
 
 pub fn load(file: &str) -> color_eyre::Result<Config> {
-    let config: Config = toml::from_str(std::fs::read_to_string(file)?.as_str())?;
+    let config: Config = toml::from_str(&std::fs::read_to_string(file)?)?;
     Ok(config)
 }
 

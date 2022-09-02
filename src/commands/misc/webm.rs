@@ -38,7 +38,7 @@ pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
         }
     }
 
-    let webm = post.attachment_url(board).unwrap();
+    let webm: &str = &post.attachment_url(board).unwrap();
     let metadata = post.attachment.as_ref().unwrap();
 
     /* this is fast but ugly; sends two messages */
@@ -92,7 +92,7 @@ pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
             })
         })
         /* sends one pretty message but is slow depending on the connection(?) */
-        .attachment(AttachmentType::from(webm.as_str()))
+        .attachment(AttachmentType::from(webm))
     })
     .await?;
 

@@ -1,3 +1,5 @@
+// todo: use simple reqwests, remove rchan
+
 use crate::{config::ACCENT_COLOR, Context, Error};
 use chrono::{DateTime, NaiveDateTime, Utc};
 use rand::seq::SliceRandom;
@@ -19,14 +21,14 @@ pub async fn cute(
 
     let cute_boards = vec!["c", "cm"];
     let board = match board {
-        Some(b) => b.to_owned(),
+        Some(b) => b,
         None => cute_boards
             .choose(&mut rand::thread_rng())
             .unwrap()
             .to_string(),
     };
 
-    let catalog = client.get_board_catalog(board.as_str()).await?.0;
+    let catalog = client.get_board_catalog(&board).await?.0;
     let page = catalog.choose(&mut rand::thread_rng()).unwrap();
     let thread_id = page
         .threads
@@ -37,7 +39,7 @@ pub async fn cute(
     let mut posts: Vec<Post>;
     let mut thread: Thread;
     loop {
-        thread = client.get_full_thread(board.as_str(), thread_id).await?;
+        thread = client.get_full_thread(&board, thread_id).await?;
         posts = thread
             .posts
             .into_iter()
@@ -50,7 +52,7 @@ pub async fn cute(
     }
 
     let post = posts.choose(&mut rand::thread_rng()).unwrap();
-    let image = post.attachment_url(board.as_str()).unwrap();
+    let image = post.attachment_url(&board).unwrap();
     let metadata = post.attachment.as_ref().unwrap();
 
     ctx.send(|r| {
