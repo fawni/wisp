@@ -10,7 +10,7 @@ pub struct Data {}
 mod commands;
 mod config;
 use commands::{
-    misc::{avatar::*, cute::*, ping::*, webm::*},
+    misc::{avatar::*, cute::*, ping::*, webm::*, xkcd::*},
     moderation::clear::*,
     owner::{echo::*, register::*},
 };
@@ -53,6 +53,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 clear(),
                 cute(),
                 webm(),
+                xkcd(),
             ],
             prefix_options: poise::PrefixFrameworkOptions {
                 prefix: Some(PREFIX.to_string()),
