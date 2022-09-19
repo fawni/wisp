@@ -2,8 +2,8 @@
 
 use crate::{config::ACCENT_COLOR, Context, Error};
 use chrono::{DateTime, NaiveDateTime, Utc};
-use rand::seq::SliceRandom;
-use rchan::{client::Client, prelude::Post, thread::Thread};
+use nanorand::{Rng, WyRand};
+use rchan::{client::Client, prelude::Post};
 
 async fn cute_boards<'a>(_ctx: Context<'_>, _partial: &'a str) -> Vec<String> {
     vec!["c".to_string(), "cm".to_string()]
@@ -18,40 +18,33 @@ pub async fn cute(
     board: Option<String>,
 ) -> Result<(), Error> {
     let client = Client::new();
+    let mut rng = WyRand::new();
 
     let cute_boards = vec!["c", "cm"];
     let board = match board {
         Some(b) => b,
-        None => cute_boards
-            .choose(&mut rand::thread_rng())
-            .unwrap()
-            .to_string(),
+        None => cute_boards[rng.generate_range(0..cute_boards.len())].to_string(),
     };
 
     let catalog = client.get_board_catalog(&board).await?.0;
-    let page = catalog.choose(&mut rand::thread_rng()).unwrap();
-    let thread_id = page
-        .threads
-        .choose(&mut rand::thread_rng())
-        .unwrap()
-        .thread_no();
+    let page = &catalog[rng.generate_range(0..catalog.len())];
+    let thread_id = page.threads[rng.generate_range(0..page.threads.len())].thread_no();
 
-    let mut posts: Vec<Post>;
-    let mut thread: Thread;
+    let thread = client.get_full_thread(&board, thread_id).await?;
+    let posts = thread
+        .posts
+        .into_iter()
+        .filter(|p| p.attachment.is_some())
+        .collect::<Vec<Post>>();
+    let mut post: &Post;
+
     loop {
-        thread = client.get_full_thread(&board, thread_id).await?;
-        posts = thread
-            .posts
-            .into_iter()
-            .filter(|p| p.attachment.is_some())
-            .collect::<Vec<Post>>();
-
-        if !posts.is_empty() && !thread.sticky {
+        post = &posts[rng.generate_range(0..posts.len())];
+        if post.attachment_url(&board).is_some() && !thread.sticky {
             break;
         }
     }
 
-    let post = posts.choose(&mut rand::thread_rng()).unwrap();
     let image = post.attachment_url(&board).unwrap();
     let metadata = post.attachment.as_ref().unwrap();
 

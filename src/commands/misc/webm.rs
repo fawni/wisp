@@ -1,7 +1,7 @@
 use crate::{config::ACCENT_COLOR, Context, Error};
 use chrono::{DateTime, NaiveDateTime, Utc};
+use nanorand::{Rng, WyRand};
 use poise::serenity_prelude::AttachmentType;
-use rand::seq::SliceRandom;
 use rchan::{client::Client, prelude::Post};
 
 /// get a webm from wsg
@@ -9,15 +9,12 @@ use rchan::{client::Client, prelude::Post};
 pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
     ctx.defer().await?;
     let client = Client::new();
+    let mut rng = WyRand::new();
 
     let board = "wsg";
     let catalog = client.get_board_catalog(board).await?.0;
-    let page = catalog.choose(&mut rand::thread_rng()).unwrap();
-    let thread_id = page
-        .threads
-        .choose(&mut rand::thread_rng())
-        .unwrap()
-        .thread_no();
+    let page = &catalog[rng.generate_range(0..catalog.len())];
+    let thread_id = page.threads[rng.generate_range(0..page.threads.len())].thread_no();
 
     let thread = client.get_full_thread(board, thread_id).await?;
     let posts = thread
@@ -28,8 +25,7 @@ pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
     let mut post: &Post;
 
     loop {
-        post = posts.choose(&mut rand::thread_rng()).unwrap();
-
+        post = &posts[rng.generate_range(0..posts.len())];
         if post.attachment_url(board).is_some()
             && !thread.sticky
             && post.attachment.as_ref().unwrap().ext == ".webm"
