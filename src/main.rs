@@ -40,9 +40,8 @@ async fn event_listener(
 }
 
 #[tokio::main]
-async fn main() -> color_eyre::Result<()> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     kankyo::init()?;
-    color_eyre::install()?;
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {

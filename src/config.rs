@@ -1,5 +1,6 @@
 use lazy_static::lazy_static;
 use serde::Deserialize;
+use std::error::Error;
 
 #[derive(Deserialize)]
 pub struct Config {
@@ -7,7 +8,7 @@ pub struct Config {
     pub accent_color: String,
 }
 
-pub fn load(file: &str) -> color_eyre::Result<Config> {
+pub fn load(file: &str) -> Result<Config, Box<dyn Error>> {
     let config: Config = toml::from_str(&std::fs::read_to_string(file)?)?;
     Ok(config)
 }
