@@ -1,11 +1,11 @@
 use crate::{config::ACCENT_COLOR, Context, Error};
-use poise::serenity_prelude::{self as serenity};
+use poise::serenity_prelude::{Color, User};
 
 /// displays a user's avatar
-#[poise::command(prefix_command, slash_command, aliases("av"))]
+#[poise::command(prefix_command, slash_command, aliases("av", "pfp"))]
 pub async fn avatar(
     ctx: Context<'_>,
-    #[description = "user whose avatar will be displayed"] user: Option<serenity::User>,
+    #[description = "user whose avatar will be displayed"] user: Option<User>,
 ) -> Result<(), Error> {
     let user = user.as_ref().unwrap_or_else(|| ctx.author());
     let member = match ctx.guild() {
@@ -20,7 +20,7 @@ pub async fn avatar(
         user.default_avatar_url(),
         user.face()
     );
-    let mut color = serenity::Color::new(*ACCENT_COLOR);
+    let mut color = Color::new(*ACCENT_COLOR);
     let avatar = match &member {
         Some(member) => {
             description = match member.avatar_url() {

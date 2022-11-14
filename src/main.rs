@@ -12,7 +12,7 @@ mod config;
 use commands::{
     misc::{avatar::*, cute::*, ping::*, webm::*, xkcd::*},
     moderation::clear::*,
-    owner::{echo::*, register::*},
+    owner::{echo::*, ptolemaea::*, register::*},
 };
 
 async fn event_listener(
@@ -54,6 +54,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 cute(),
                 webm(),
                 xkcd(),
+                ptolemaea(),
             ],
             prefix_options: poise::PrefixFrameworkOptions {
                 prefix: Some(PREFIX.to_string()),
