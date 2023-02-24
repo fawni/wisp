@@ -5,22 +5,27 @@ authors = ["obscurity <z@x4.pm>"]
 edition = "2021"
 
 [dependencies]
-serenity = { version = "0.11", features = ["client", "gateway", "rustls_backend", "model", "cache"], default-features = false }
+serenity = { version = "0.11", features = [
+    "client",
+    "gateway",
+    "rustls_backend",
+    "model",
+    "cache",
+], default-features = false }
 poise = "0.4"
 tokio = { version = "1.20", features = ["macros", "rt-multi-thread"] }
 
 kankyo = "0.3"
 paris = { version = "1.5", features = ["timestamps", "macros"] }
 serde = { version = "1.0", features = ["derive"] }
-toml = "0.5"
+toml = "0.7"
 
 chrono = "0.4"
 chrono-tz = "0.8"
-reqwest = { version = "0.11", features = ["json"]}
+ureq = { version = "2.6", features = ["json"] }
 lazy_static = "1.4"
-rchan = "0.3"
 nanorand = "0.7"
-system_shutdown = "3.0"
+system_shutdown = "4.0"
 
 [profile.release]
 lto = true

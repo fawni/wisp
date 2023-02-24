@@ -1,9 +1,10 @@
-// todo: use simple reqwests, remove rchan
-
-use crate::{config::ACCENT_COLOR, Context, Error};
+use crate::{
+    api::fourchan::{Catalog, Post, Thread},
+    config::ACCENT_COLOR,
+    Context, Error,
+};
 use chrono::{DateTime, NaiveDateTime, Utc};
 use nanorand::{Rng, WyRand};
-use rchan::{client::Client, prelude::Post};
 
 async fn cute_boards<'a>(_ctx: Context<'_>, _partial: &'a str) -> Vec<String> {
     vec!["c".to_string(), "cm".to_string()]
@@ -14,10 +15,9 @@ async fn cute_boards<'a>(_ctx: Context<'_>, _partial: &'a str) -> Vec<String> {
 pub async fn cute(
     ctx: Context<'_>,
     #[autocomplete = "cute_boards"]
-    #[description = "board to open"]
+    #[description = "board to pick from"]
     board: Option<String>,
 ) -> Result<(), Error> {
-    let client = Client::new();
     let mut rng = WyRand::new();
 
     let cute_boards = vec!["c", "cm"];
@@ -26,50 +26,43 @@ pub async fn cute(
         None => cute_boards[rng.generate_range(0..cute_boards.len())].to_string(),
     };
 
-    let catalog = client.get_board_catalog(&board).await?.0;
-    let page = &catalog[rng.generate_range(0..catalog.len())];
-    let thread_id = page.threads[rng.generate_range(0..page.threads.len())].thread_no();
+    let catalog = ureq::get(&format!("https://a.4cdn.org/{board}/catalog.json"))
+        .call()?
+        .into_json::<Vec<Catalog>>()?;
 
-    let thread = client.get_full_thread(&board, thread_id).await?;
+    let thread_no = catalog[rng.generate_range(0..9)].threads[rng.generate_range(0..14)].no;
+
+    let thread = ureq::get(&format!(
+        "https://a.4cdn.org/{board}/thread/{thread_no}.json"
+    ))
+    .call()?
+    .into_json::<Thread>()?;
     let posts = thread
         .posts
         .into_iter()
-        .filter(|p| p.attachment.is_some())
+        .filter(|p| p.ext.is_some() && p.sticky.is_none())
         .collect::<Vec<Post>>();
-    let mut post: &Post;
-
-    loop {
-        post = &posts[rng.generate_range(0..posts.len())];
-        if post.attachment_url(&board).is_some() && !thread.sticky {
-            break;
-        }
-    }
-
-    let image = post.attachment_url(&board).unwrap();
-    let metadata = post.attachment.as_ref().unwrap();
+    let post = posts[rng.generate_range(0..posts.len())].clone();
+    let ext = post.ext.unwrap();
+    let image = format!("https://i.4cdn.org/{board}/{}{ext}", post.tim.unwrap());
 
     ctx.send(|r| {
         r.embed(|r| {
             r.image(image)
                 .color(*ACCENT_COLOR)
                 .title(format!("No. {}", post.no))
-                .description(format!("{}{}", metadata.filename, metadata.ext))
+                .description(format!("{}{}", post.filename.unwrap(), ext))
                 .author(|a| {
                     a.name(format!("/{board}/"))
                         .icon_url("https://i.imgur.com/XcCKhYj.png")
-                        .url(format!("https://boards.4channel.org/{}/", board))
+                        .url(format!("https://boards.4channel.org/{board}/"))
                 })
                 .footer(|f| {
                     f.text(format!(
                         "{} | {}",
-                        metadata.id,
+                        post.tim.unwrap(),
                         DateTime::<Utc>::from_utc(
-                            NaiveDateTime::from_timestamp(
-                                format!("{:.10}", metadata.id.to_string())
-                                    .parse::<i64>()
-                                    .unwrap(),
-                                0,
-                            ),
+                            NaiveDateTime::from_timestamp(post.time as i64, 0,),
                             Utc,
                         )
                         .with_timezone(&chrono_tz::Tz::Africa__Cairo)
@@ -83,16 +76,15 @@ pub async fn cute(
                     b.label("view post")
                         .style(poise::serenity_prelude::ButtonStyle::Link)
                         .url(format!(
-                            "https://boards.4channel.org/{}/thread/{}#p{}",
-                            board, thread.no, post.no
+                            "https://boards.4channel.org/{board}/thread/{thread_no}#p{}",
+                            post.no
                         ))
                 })
                 .create_button(|b| {
                     b.label("view thread")
                         .style(poise::serenity_prelude::ButtonStyle::Link)
                         .url(format!(
-                            "https://boards.4channel.org/{}/thread/{}",
-                            board, thread.no
+                            "https://boards.4channel.org/{board}/thread/{thread_no}"
                         ))
                 })
             })

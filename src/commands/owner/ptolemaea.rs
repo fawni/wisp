@@ -5,7 +5,7 @@ async fn commands<'a>(_ctx: Context<'_>, _partial: &'a str) -> Vec<String> {
 }
 
 /// ptolemaea
-#[poise::command(prefix_command, slash_command)]
+#[poise::command(prefix_command, slash_command, owners_only)]
 pub async fn ptolemaea(
     ctx: Context<'_>,
     #[autocomplete = "commands"]

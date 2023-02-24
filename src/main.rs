@@ -1,19 +1,22 @@
-use config::PREFIX;
-use paris::{info, success};
-use poise::serenity_prelude::{self as serenity, Activity, OnlineStatus};
 use std::time::Duration;
 
-type Error = Box<dyn std::error::Error + Send + Sync>;
-type Context<'a> = poise::Context<'a, Data, Error>;
-pub struct Data {}
+use paris::{info, success};
+use poise::serenity_prelude::{self as serenity, Activity, OnlineStatus};
 
-mod commands;
-mod config;
 use commands::{
     misc::{avatar::*, cute::*, ping::*, webm::*, xkcd::*},
     moderation::clear::*,
     owner::{echo::*, ptolemaea::*, register::*},
 };
+use config::PREFIX;
+
+mod api;
+mod commands;
+mod config;
+
+type Error = Box<dyn std::error::Error + Send + Sync>;
+type Context<'a> = poise::Context<'a, Data, Error>;
+pub struct Data {}
 
 async fn event_listener(
     ctx: &serenity::Context,
@@ -33,6 +36,7 @@ async fn event_listener(
             .await;
             success!("<bold>{}</> is <green>connected!</>", bot.user.name);
         }
+        // poise::Event::Message { new_message: msg } => {}
         _ => {}
     }
 
