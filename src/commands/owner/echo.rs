@@ -14,15 +14,15 @@ pub async fn echo(
 
     if let Some(reply_id) = reply_id {
         let reply_message = channel
-            .message(&ctx.discord().http, MessageId(reply_id.parse::<u64>()?))
+            .message(&ctx, MessageId(reply_id.parse::<u64>()?))
             .await;
         if let Ok(msg) = reply_message {
-            msg.reply(&ctx.discord().http, &text).await?;
+            msg.reply(&ctx, &text).await?;
         } else {
             response = "invalid message id to reply to:(";
         };
     } else {
-        channel.say(&ctx.discord().http, text).await?;
+        channel.say(&ctx, text).await?;
     };
     ctx.say(response).await?;
     Ok(())

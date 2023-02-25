@@ -1,4 +1,3 @@
-
 set windows-shell := ["pwsh.exe", "-NoLogo", "-Command"]
 
 _default:
@@ -11,3 +10,7 @@ build:
 # Runs clippy
 check:
     cargo clippy --locked -- -D warnings
+
+# Cut a release
+@release VERSION:
+    cargo release {{VERSION}} -x --no-publish --no-confirm

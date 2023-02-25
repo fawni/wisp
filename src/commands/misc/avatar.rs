@@ -9,7 +9,7 @@ pub async fn avatar(
 ) -> Result<(), Error> {
     let user = user.as_ref().unwrap_or_else(|| ctx.author());
     let member = match ctx.guild() {
-        Some(guild) => match guild.member(ctx.discord(), user.id).await {
+        Some(guild) => match guild.member(ctx, user.id).await {
             Ok(member) => Some(member),
             Err(_) => None,
         },
@@ -32,7 +32,7 @@ pub async fn avatar(
                 ),
                 None => description,
             };
-            if let Some(c) = member.colour(ctx.discord()) {
+            if let Some(c) = member.colour(ctx) {
                 color = c;
             }
             member.face()

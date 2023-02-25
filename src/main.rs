@@ -8,7 +8,7 @@ use commands::{
     moderation::clear::*,
     owner::{echo::*, ptolemaea::*, register::*},
 };
-use config::PREFIX;
+use serde::Deserialize;
 
 mod api;
 mod commands;
@@ -18,36 +18,34 @@ type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Data, Error>;
 pub struct Data {}
 
-async fn event_listener(
-    ctx: &serenity::Context,
-    event: &poise::Event<'_>,
-    _framework: poise::FrameworkContext<'_, Data, Error>,
-    _user_data: &Data,
-) -> Result<(), Error> {
-    #[allow(clippy::single_match)]
-    match event {
-        poise::Event::Ready {
-            data_about_bot: bot,
-        } => {
-            ctx.set_presence(
-                Some(Activity::listening("you, cutie <3")),
-                OnlineStatus::DoNotDisturb,
-            )
-            .await;
-            success!("<bold>{}</> is <green>connected!</>", bot.user.name);
-        }
-        // poise::Event::Message { new_message: msg } => {}
-        _ => {}
-    }
+// async fn event_listener(
+//     ctx: &serenity::Context,
+//     event: &poise::Event<'_>,
+//     _framework: poise::FrameworkContext<'_, Data, Error>,
+//     _user_data: &Data,
+// ) -> Result<(), Error> {
+//     match event {
+//         poise::Event::Message { new_message: msg } => {}
+//         _ => {}
+//     }
 
-    Ok(())
+//     Ok(())
+// }
+
+#[derive(Deserialize)]
+pub struct Config {
+    pub prefix: String,
+    pub accent_color: String,
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     kankyo::init()?;
-
     let framework = poise::Framework::builder()
+        .token(std::env::var("DISCORD_TOKEN").expect("missing DISCORD_TOKEN env var"))
+        .intents(
+            serenity::GatewayIntents::non_privileged() | serenity::GatewayIntents::MESSAGE_CONTENT,
+        )
         .options(poise::FrameworkOptions {
             commands: vec![
                 register(),
@@ -61,14 +59,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 ptolemaea(),
             ],
             prefix_options: poise::PrefixFrameworkOptions {
-                prefix: Some(PREFIX.to_string()),
+                prefix: Some(config::PREFIX.to_owned()),
                 edit_tracker: Some(poise::EditTracker::for_timespan(Duration::from_secs(3600))),
                 ..Default::default()
             },
             post_command: |ctx| {
                 Box::pin(async move {
                     let location = match ctx.guild() {
-                        Some(guild) => match ctx.channel_id().name(&ctx.discord().cache).await {
+                        Some(guild) => match ctx.channel_id().name(&ctx).await {
                             Some(channel) => format!(
                                 "<magenta>#{}, {}</> (<italic>{}</>)",
                                 channel, guild.name, guild.id
@@ -86,16 +84,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     );
                 })
             },
-            listener: |ctx, event, framework, user_data| {
-                Box::pin(event_listener(ctx, event, framework, user_data))
-            },
+            // event_handler: |ctx, event, framework, user_data| {
+            //     Box::pin(event_listener(ctx, event, framework, user_data))
+            // },
             ..Default::default()
         })
-        .token(std::env::var("DISCORD_TOKEN").expect("missing DISCORD_TOKEN env var"))
-        .intents(
-            serenity::GatewayIntents::non_privileged() | serenity::GatewayIntents::MESSAGE_CONTENT,
-        )
-        .user_data_setup(move |_ctx, _ready, _framework| Box::pin(async move { Ok(Data {}) }));
+        .setup(|ctx, ready, framework| {
+            Box::pin(async move {
+                poise::builtins::register_globally(ctx, &framework.options().commands).await?;
+                ctx.set_presence(
+                    Some(Activity::listening("you, cutie <3")),
+                    OnlineStatus::DoNotDisturb,
+                )
+                .await;
+                success!("<bold>{}</> is <green>connected!</>", ready.user.name);
+                Ok(Data {})
+            })
+        });
 
     framework.run().await?;
 

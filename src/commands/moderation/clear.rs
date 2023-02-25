@@ -19,24 +19,22 @@ pub async fn clear(
     let channel = ctx.channel_id();
 
     let mut messages = channel
-        .messages(&ctx.discord().http, |m| {
-            m.limit(amount as u64).before(reply.id)
-        })
+        .messages(&ctx, |m| m.limit(amount as u64).before(reply.id))
         .await?;
 
-    // todo: fix clear by user. messages are fetched with no regard for its author then filtered; messages by user deleted < amount desired.
     if let Some(user) = user {
-        messages = messages
+        messages = channel
+            .messages(&ctx, |m| m.before(reply.id))
+            .await?
             .into_iter()
             .filter(|m| m.author.id == user.id)
+            .take(amount as usize)
             .collect::<Vec<Message>>();
     }
 
-    channel
-        .delete_messages(&ctx.discord().http, &messages)
-        .await?;
+    channel.delete_messages(&ctx, &messages).await?;
     reply
-        .edit(ctx.discord(), |r| {
+        .edit(ctx, |r| {
             r.content(format!("done! cleared `{}` messages.", messages.len()))
         })
         .await?;
