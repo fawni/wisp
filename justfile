@@ -3,9 +3,9 @@ set windows-shell := ["pwsh.exe", "-NoLogo", "-Command"]
 _default:
     @just --list
 
-# Build
-build:
-    cargo build --locked --release
+# Install
+install:
+    cargo install --path .
 
 # Runs exessive clippy lints (possible false positives so just warn)
 lint:

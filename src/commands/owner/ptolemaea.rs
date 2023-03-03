@@ -1,7 +1,7 @@
 use crate::{Context, Error};
 
 async fn commands<'a>(_ctx: Context<'_>, _partial: &'a str) -> Vec<String> {
-    vec!["shutdown".to_string(), "reboot".to_string()]
+    vec![String::from("shutdown"), String::from("reboot")]
 }
 
 /// ptolemaea

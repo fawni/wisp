@@ -19,7 +19,7 @@ pub struct Thread {
 #[derive(Debug, Deserialize, Clone)]
 pub struct Post {
     pub no: u32,
-    pub time: u64,
+    pub time: i64,
     pub ext: Option<String>,
     pub tim: Option<u64>,
     pub filename: Option<String>,

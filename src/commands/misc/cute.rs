@@ -7,7 +7,7 @@ use chrono::{DateTime, NaiveDateTime, Utc};
 use nanorand::{Rng, WyRand};
 
 async fn cute_boards<'a>(_ctx: Context<'_>, _partial: &'a str) -> Vec<String> {
-    vec!["c".to_string(), "cm".to_string()]
+    vec![String::from("c"), String::from("cm")]
 }
 
 /// get a /cute/ picture
@@ -21,10 +21,8 @@ pub async fn cute(
     let mut rng = WyRand::new();
 
     let cute_boards = vec!["c", "cm"];
-    let board = match board {
-        Some(b) => b,
-        None => cute_boards[rng.generate_range(0..cute_boards.len())].to_string(),
-    };
+    let board = board
+        .unwrap_or_else(|| String::from(cute_boards[rng.generate_range(0..cute_boards.len())]));
 
     let catalog = ureq::get(&format!("https://a.4cdn.org/{board}/catalog.json"))
         .call()?
@@ -62,7 +60,7 @@ pub async fn cute(
                         "{} | {}",
                         post.tim.unwrap(),
                         DateTime::<Utc>::from_utc(
-                            NaiveDateTime::from_timestamp_opt(post.time as i64, 0).unwrap(),
+                            NaiveDateTime::from_timestamp_opt(post.time, 0).unwrap(),
                             Utc,
                         )
                         .with_timezone(&chrono_tz::Tz::Africa__Cairo)

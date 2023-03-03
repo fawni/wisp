@@ -9,10 +9,7 @@ pub async fn avatar(
 ) -> Result<(), Error> {
     let user = user.as_ref().unwrap_or_else(|| ctx.author());
     let member = match ctx.guild() {
-        Some(guild) => match guild.member(ctx, user.id).await {
-            Ok(member) => Some(member),
-            Err(_) => None,
-        },
+        Some(guild) => (guild.member(ctx, user.id).await).ok(),
         None => None,
     };
     let mut description = format!(
@@ -21,8 +18,9 @@ pub async fn avatar(
         user.face()
     );
     let mut color = Color::new(*ACCENT_COLOR);
-    let avatar = match &member {
-        Some(member) => {
+    let avatar = member.map_or_else(
+        || user.face(),
+        |member| {
             description = match member.avatar_url() {
                 Some(server_avatar) => format!(
                     "[default]({}), [server]({}), [user]({})",
@@ -30,15 +28,15 @@ pub async fn avatar(
                     server_avatar,
                     member.user.face()
                 ),
-                None => description,
+                None => description.clone(),
             };
             if let Some(c) = member.colour(ctx) {
                 color = c;
             }
+
             member.face()
-        }
-        None => user.face(),
-    };
+        },
+    );
 
     ctx.send(|r| {
         r.embed(|r| {

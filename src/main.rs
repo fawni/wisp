@@ -4,9 +4,9 @@ use paris::{info, success};
 use poise::serenity_prelude::{self as serenity, Activity, OnlineStatus};
 
 use commands::{
-    misc::{avatar::*, cute::*, ping::*, webm::*, xkcd::*},
-    moderation::clear::*,
-    owner::{echo::*, ptolemaea::*, register::*},
+    misc::{avatar::avatar, cute::cute, ping::ping, webm::webm, xkcd::xkcd},
+    moderation::clear::clear,
+    owner::{echo::echo, ptolemaea::ptolemaea, register::register},
 };
 use serde::Deserialize;
 
@@ -60,16 +60,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             ],
             post_command: |ctx| {
                 Box::pin(async move {
-                    let location = match ctx.guild() {
-                        Some(guild) => match ctx.channel_id().name(&ctx).await {
-                            Some(channel) => format!(
+                    let location = if let Some(guild) = ctx.guild() {
+                        if let Some(channel) = ctx.channel_id().name(&ctx).await {
+                            format!(
                                 "<magenta>#{}, {}</> (<italic>{}</>)",
                                 channel, guild.name, guild.id
-                            ),
-                            None => format!("<magenta>{}</> (<italic>{}</>)", guild.name, guild.id),
-                        },
-                        None => format!("<magenta>{}'s dms</>", ctx.author().tag()),
+                            )
+                        } else {
+                            format!("<magenta>{}</> (<italic>{}</>)", guild.name, guild.id)
+                        }
+                    } else {
+                        format!("<magenta>{}'s dms</>", ctx.author().tag())
                     };
+
                     info!(
                         "executed <green>{}</> by <bold>{}</> (<italic>{}</>) in {}",
                         ctx.command().qualified_name,

@@ -19,7 +19,7 @@ pub async fn clear(
     let channel = ctx.channel_id();
 
     let mut messages = channel
-        .messages(&ctx, |m| m.limit(amount as u64).before(reply.id))
+        .messages(&ctx, |m| m.limit(amount.into()).before(reply.id))
         .await?;
 
     if let Some(user) = user {
