@@ -47,7 +47,7 @@ pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
                         "{} | {}",
                         post.tim.unwrap(),
                         DateTime::<Utc>::from_utc(
-                            NaiveDateTime::from_timestamp(post.time as i64, 0),
+                            NaiveDateTime::from_timestamp_opt(post.time as i64, 0).unwrap(),
                             Utc,
                         )
                         .with_timezone(&chrono_tz::Tz::Africa__Cairo)

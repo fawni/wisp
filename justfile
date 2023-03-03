@@ -7,10 +7,6 @@ _default:
 build:
     cargo build --locked --release
 
-# Runs clippy
-check:
-    cargo clippy --locked -- -D warnings
-
-# Cut a release
-@release VERSION:
-    cargo release {{VERSION}} -x --no-publish --no-confirm
+# Runs exessive clippy lints (possible false positives so just warn)
+lint:
+    cargo clippy --locked -- -W clippy::pedantic -W clippy::nursery

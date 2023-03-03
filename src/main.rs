@@ -58,11 +58,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 xkcd(),
                 ptolemaea(),
             ],
-            prefix_options: poise::PrefixFrameworkOptions {
-                prefix: Some(config::PREFIX.to_owned()),
-                edit_tracker: Some(poise::EditTracker::for_timespan(Duration::from_secs(3600))),
-                ..Default::default()
-            },
             post_command: |ctx| {
                 Box::pin(async move {
                     let location = match ctx.guild() {
@@ -83,6 +78,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         location,
                     );
                 })
+            },
+            prefix_options: poise::PrefixFrameworkOptions {
+                prefix: Some(config::PREFIX.to_owned()),
+                edit_tracker: Some(poise::EditTracker::for_timespan(Duration::from_secs(3600))),
+                ..Default::default()
             },
             // event_handler: |ctx, event, framework, user_data| {
             //     Box::pin(event_listener(ctx, event, framework, user_data))

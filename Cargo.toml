@@ -22,7 +22,7 @@ paris = { version = "1.5", features = ["timestamps", "macros"] }
 serde = { version = "1.0", features = ["derive"] }
 toml = "0.7"
 
-chrono = "0.4"
+chrono = "0.4.23"
 chrono-tz = "0.8"
 ureq = { version = "2.6", features = ["json"] }
 lazy_static = "1.4"
