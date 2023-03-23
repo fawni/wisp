@@ -1,4 +1,4 @@
-use crate::{api::xkcd::Comic, config::ACCENT_COLOR, Context, Error};
+use crate::{api::xkcd::Comic, Context, Error, ACCENT_COLOR};
 use nanorand::{Rng, WyRand};
 
 const BASE_URL: &str = "https://xkcd.com";

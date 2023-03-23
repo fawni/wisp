@@ -1,4 +1,4 @@
-use crate::{config::ACCENT_COLOR, Context, Error};
+use crate::{Context, Error, ACCENT_COLOR};
 use poise::serenity_prelude::{Color, User};
 
 /// displays a user's avatar

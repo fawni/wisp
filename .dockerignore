@@ -1,0 +1,15 @@
+# flyctl launch added from .gitignore
+# code
+**\.vscode
+**\.idea
+
+# rust
+target
+
+# production
+**\.env
+**\*.bat
+
+# dev
+**\tmp
+fly.toml

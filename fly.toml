@@ -1,0 +1,14 @@
+# fly.toml file generated for wisp on 2023-03-23T22:06:16+02:00
+
+app = "wisp"
+kill_signal = "SIGINT"
+kill_timeout = 5
+primary_region = "lhr"
+processes = []
+
+[env]
+  WISP_COLOR = "E83F80"
+  WISP_PREFIX = "~"
+
+[experimental]
+  allowed_public_ports = []

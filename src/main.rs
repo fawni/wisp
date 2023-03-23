@@ -8,14 +8,21 @@ use commands::{
     moderation::clear::clear,
     owner::{echo::echo, ptolemaea::ptolemaea, register::register},
 };
+use lazy_static::lazy_static;
 use serde::Deserialize;
 
 mod api;
 mod commands;
-mod config;
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Data, Error>;
+
+lazy_static! {
+    pub static ref PREFIX: String = std::env::var("WISP_PREFIX").unwrap();
+    pub static ref ACCENT_COLOR: u32 =
+        u32::from_str_radix(&std::env::var("WISP_COLOR").unwrap(), 16).unwrap();
+}
+
 pub struct Data {}
 
 // async fn event_listener(
@@ -40,9 +47,9 @@ pub struct Config {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    kankyo::init()?;
+    dotenvy::dotenv().ok();
     let framework = poise::Framework::builder()
-        .token(std::env::var("DISCORD_TOKEN").expect("missing DISCORD_TOKEN env var"))
+        .token(std::env::var("WISP_TOKEN").expect("missing WISP_TOKEN env var"))
         .intents(
             serenity::GatewayIntents::non_privileged() | serenity::GatewayIntents::MESSAGE_CONTENT,
         )
@@ -83,7 +90,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 })
             },
             prefix_options: poise::PrefixFrameworkOptions {
-                prefix: Some(config::PREFIX.to_owned()),
+                prefix: Some(PREFIX.to_string()),
                 edit_tracker: Some(poise::EditTracker::for_timespan(Duration::from_secs(3600))),
                 ..Default::default()
             },

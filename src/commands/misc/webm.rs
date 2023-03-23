@@ -1,7 +1,6 @@
 use crate::{
     api::fourchan::{Catalog, Post, Thread},
-    config::ACCENT_COLOR,
-    Context, Error,
+    Context, Error, ACCENT_COLOR,
 };
 use chrono::{DateTime, NaiveDateTime, Utc};
 use nanorand::{Rng, WyRand};
