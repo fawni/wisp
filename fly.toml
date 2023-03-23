@@ -1,9 +1,9 @@
-# fly.toml file generated for wisp on 2023-03-23T22:06:16+02:00
+# fly.toml file generated for wisp on 2023-03-23T22:15:06+02:00
 
 app = "wisp"
 kill_signal = "SIGINT"
 kill_timeout = 5
-primary_region = "lhr"
+primary_region = "cdg"
 processes = []
 
 [env]
