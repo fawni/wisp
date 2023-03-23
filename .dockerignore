@@ -8,6 +8,7 @@ target
 
 # production
 **\.env
+**\.config
 **\*.bat
 
 # dev

@@ -7,7 +7,7 @@
 
 # production
 .env
-config.toml
+.config
 *.bat
 
 # dev

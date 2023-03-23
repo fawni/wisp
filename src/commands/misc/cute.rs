@@ -23,17 +23,20 @@ pub async fn cute(
     let board = board
         .unwrap_or_else(|| String::from(cute_boards[rng.generate_range(0..cute_boards.len())]));
 
-    let catalog = ureq::get(&format!("https://a.4cdn.org/{board}/catalog.json"))
-        .call()?
-        .into_json::<Vec<Catalog>>()?;
+    let catalog = reqwest::get(&format!("https://a.4cdn.org/{board}/catalog.json"))
+        .await?
+        .json::<Vec<Catalog>>()
+        .await?;
 
     let thread_no = catalog[rng.generate_range(0..9)].threads[rng.generate_range(0..14)].no;
 
-    let thread = ureq::get(&format!(
+    let thread = reqwest::get(&format!(
         "https://a.4cdn.org/{board}/thread/{thread_no}.json"
     ))
-    .call()?
-    .into_json::<Thread>()?;
+    .await?
+    .json::<Thread>()
+    .await?;
+
     let posts = thread
         .posts
         .into_iter()

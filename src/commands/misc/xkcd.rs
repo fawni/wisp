@@ -10,15 +10,16 @@ pub async fn xkcd(
     ctx: Context<'_>,
     #[description = "specific comic to retrieve"] id: Option<u32>,
 ) -> Result<(), Error> {
-    let latest = ureq::get(LATEST_URL).call()?.into_json::<Comic>()?.num;
+    let latest = reqwest::get(LATEST_URL).await?.json::<Comic>().await?.num;
     let n = match id {
         Some(n) if n <= latest => n,
         _ => WyRand::new().generate_range(1..=latest),
     };
 
-    let comic = ureq::get(&format!("{BASE_URL}/{n}/info.0.json"))
-        .call()?
-        .into_json::<Comic>()?;
+    let comic = reqwest::get(&format!("{BASE_URL}/{n}.json"))
+        .await?
+        .json::<Comic>()
+        .await?;
 
     ctx.send(|r| {
         r.embed(|r| {

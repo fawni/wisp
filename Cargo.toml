@@ -7,26 +7,26 @@ repository = "https://github.com/fawni/wisp"
 license = "ISC"
 
 [dependencies]
-serenity = { version = "0.11", features = [
-    "client",
-    "gateway",
-    "rustls_backend",
-    "model",
-    "cache",
-], default-features = false }
-poise = "0.5"
-tokio = { version = "1.20", features = ["macros", "rt-multi-thread"] }
+poise = "0.5.2"
+tokio = { version = "1.26.0", features = ["macros", "rt-multi-thread"] }
 
-paris = { version = "1.5", features = ["timestamps", "macros"] }
-serde = { version = "1.0", features = ["derive"] }
+paris = { version = "1.5.13", features = ["timestamps", "macros"] }
+serde = { version = "1.0.158", features = ["derive"] }
 dotenvy = "0.15.7"
+reqwest = { version = "0.11.15", features = ["json"] }
 
 chrono = "0.4.23"
-chrono-tz = "0.8"
-ureq = { version = "2.6", features = ["json"] }
-lazy_static = "1.4"
-nanorand = "0.7"
-system_shutdown = "4.0"
+chrono-tz = "0.8.1"
+lazy_static = "1.4.0"
+nanorand = "0.7.0"
+system_shutdown = "4.0.1"
+regex = "1.7.2"
+
+[dependencies.serenity]
+version = "0.11.5"
+features = ["client", "gateway", "rustls_backend", "model", "cache"]
+default-features = false
+
 
 [profile.release]
 lto = true

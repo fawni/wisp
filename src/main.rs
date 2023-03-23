@@ -13,6 +13,7 @@ use serde::Deserialize;
 
 mod api;
 mod commands;
+mod modules;
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Data, Error>;
@@ -25,19 +26,18 @@ lazy_static! {
 
 pub struct Data {}
 
-// async fn event_listener(
-//     ctx: &serenity::Context,
-//     event: &poise::Event<'_>,
-//     _framework: poise::FrameworkContext<'_, Data, Error>,
-//     _user_data: &Data,
-// ) -> Result<(), Error> {
-//     match event {
-//         poise::Event::Message { new_message: msg } => {}
-//         _ => {}
-//     }
+async fn event_listener(
+    ctx: &serenity::Context,
+    event: &poise::Event<'_>,
+    _framework: poise::FrameworkContext<'_, Data, Error>,
+    _user_data: &Data,
+) -> Result<(), Error> {
+    if let poise::Event::Message { new_message: msg } = event {
+        modules::handle(ctx.clone(), msg.clone()).await?;
+    }
 
-//     Ok(())
-// }
+    Ok(())
+}
 
 #[derive(Deserialize)]
 pub struct Config {
@@ -94,9 +94,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 edit_tracker: Some(poise::EditTracker::for_timespan(Duration::from_secs(3600))),
                 ..Default::default()
             },
-            // event_handler: |ctx, event, framework, user_data| {
-            //     Box::pin(event_listener(ctx, event, framework, user_data))
-            // },
+            event_handler: |ctx, event, framework, user_data| {
+                Box::pin(event_listener(ctx, event, framework, user_data))
+            },
             ..Default::default()
         })
         .setup(|ctx, ready, framework| {
