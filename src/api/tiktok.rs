@@ -10,8 +10,8 @@ pub struct Tiktok {
 }
 
 impl Tiktok {
-    pub async fn from(id: &str) -> Result<Tiktok, Box<dyn std::error::Error>> {
-        let api_url = format!("https://api2.musical.ly/aweme/v1/feed/?aweme_id={}", id);
+    pub async fn from(id: &str) -> Result<Self, Box<dyn std::error::Error>> {
+        let api_url = format!("https://api2.musical.ly/aweme/v1/feed/?aweme_id={id}");
         let res = reqwest::get(api_url).await?.json::<ApiResponse>().await?;
         let aweme = res.aweme_list[0].clone();
 
@@ -19,8 +19,8 @@ impl Tiktok {
             return Err("Tiktok not found!".into());
         }
 
-        Ok(Tiktok {
-            video_url: aweme.video.play_addr.url_list[0].to_owned(),
+        Ok(Self {
+            video_url: aweme.video.play_addr.url_list[0].clone(),
             description: aweme.desc,
             author: aweme.author,
             statistics: aweme.statistics,

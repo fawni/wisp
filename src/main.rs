@@ -6,7 +6,7 @@ use poise::serenity_prelude::{self as serenity, Activity, OnlineStatus};
 use commands::{
     misc::{avatar::avatar, cute::cute, ping::ping, webm::webm, xkcd::xkcd},
     moderation::clear::clear,
-    owner::{echo::echo, ptolemaea::ptolemaea, register::register},
+    owner::{echo::echo, register::register},
 };
 use lazy_static::lazy_static;
 use serde::Deserialize;
@@ -63,7 +63,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 cute(),
                 webm(),
                 xkcd(),
-                ptolemaea(),
             ],
             post_command: |ctx| {
                 Box::pin(async move {
