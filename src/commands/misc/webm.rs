@@ -28,7 +28,7 @@ pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
     let posts = thread
         .posts
         .into_iter()
-        .filter(|p| p.ext.is_some() && p.ext.clone().unwrap() == ".webm" && p.sticky.is_none())
+        .filter(|p| p.is_webm() && !p.is_sticky())
         .collect::<Vec<Post>>();
     let post = posts[rng.generate_range(0..posts.len())].clone();
     let webm = format!("https://i.4cdn.org/{board}/{}.webm", post.tim.unwrap());

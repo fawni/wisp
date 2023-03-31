@@ -25,3 +25,17 @@ pub struct Post {
     pub filename: Option<String>,
     pub sticky: Option<u8>,
 }
+
+impl Post {
+    pub fn is_sticky(&self) -> bool {
+        self.sticky.is_some()
+    }
+
+    pub fn is_webm(&self) -> bool {
+        self.ext.is_some() && self.ext.as_ref().unwrap() == ".webm"
+    }
+
+    pub fn is_image(&self) -> bool {
+        self.ext.is_some() && !self.is_webm()
+    }
+}

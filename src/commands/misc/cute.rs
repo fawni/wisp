@@ -40,7 +40,7 @@ pub async fn cute(
     let posts = thread
         .posts
         .into_iter()
-        .filter(|p| p.ext.is_some() && p.sticky.is_none())
+        .filter(|p| p.is_image() && !p.is_sticky())
         .collect::<Vec<Post>>();
     let post = posts[rng.generate_range(0..posts.len())].clone();
     let ext = post.ext.unwrap();
