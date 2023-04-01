@@ -4,7 +4,7 @@ use nanorand::{Rng, WyRand};
 const BASE_URL: &str = "https://xkcd.com";
 const LATEST_URL: &str = "https://xkcd.com/info.0.json";
 
-/// retrieve an xkcd comic
+/// Get an xkcd comic
 #[poise::command(prefix_command, slash_command)]
 pub async fn xkcd(
     ctx: Context<'_>,

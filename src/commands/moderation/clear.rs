@@ -1,7 +1,7 @@
 use crate::{Context, Error};
 use poise::serenity_prelude::{Message, User};
 
-/// mass delete messages
+/// Clear messages
 #[poise::command(
     prefix_command,
     slash_command,

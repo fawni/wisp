@@ -1,7 +1,7 @@
 use crate::{Context, Error};
 use tokio::time::Instant;
 
-/// ping pong
+/// Ping the bot
 #[poise::command(prefix_command, slash_command)]
 pub async fn ping(ctx: Context<'_>) -> Result<(), Error> {
     let start = Instant::now();

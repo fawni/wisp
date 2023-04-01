@@ -1,7 +1,7 @@
 use crate::{Context, Error, ACCENT_COLOR};
 use poise::serenity_prelude::{Color, User};
 
-/// displays a user's avatar
+/// Display a user's avatar
 #[poise::command(prefix_command, slash_command, aliases("av", "pfp"))]
 pub async fn avatar(
     ctx: Context<'_>,

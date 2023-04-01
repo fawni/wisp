@@ -4,9 +4,9 @@ use paris::{info, success};
 use poise::serenity_prelude::{self as serenity, Activity, OnlineStatus};
 
 use commands::{
-    misc::{avatar::avatar, cute::cute, ping::ping, webm::webm, xkcd::xkcd},
+    misc::{avatar::avatar, cute::cute, help::help, ping::ping, webm::webm, xkcd::xkcd},
     moderation::clear::clear,
-    owner::{echo::echo, register::register},
+    owner::echo::echo,
 };
 use lazy_static::lazy_static;
 use serde::Deserialize;
@@ -55,7 +55,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
         .options(poise::FrameworkOptions {
             commands: vec![
-                register(),
+                help(),
                 ping(),
                 avatar(),
                 echo(),

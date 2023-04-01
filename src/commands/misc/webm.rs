@@ -5,7 +5,7 @@ use crate::{
 use chrono::{DateTime, NaiveDateTime, Utc};
 use nanorand::{Rng, WyRand};
 
-/// get a webm from wsg
+/// Get a webm from /wsg/
 #[poise::command(prefix_command, slash_command)]
 pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
     ctx.defer().await?;

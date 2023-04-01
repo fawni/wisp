@@ -9,7 +9,7 @@ async fn cute_boards<'a>(_ctx: Context<'_>, _partial: &'a str) -> Vec<String> {
     vec![String::from("c"), String::from("cm")]
 }
 
-/// get a /cute/ picture
+/// Get a /cute/ picture
 #[poise::command(prefix_command, slash_command)]
 pub async fn cute(
     ctx: Context<'_>,
@@ -51,7 +51,7 @@ pub async fn cute(
             r.image(image)
                 .color(*ACCENT_COLOR)
                 .title(format!("No. {}", post.no))
-                .description(format!("{}{}", post.filename.unwrap(), ext))
+                .description(format!("{}{ext}", post.filename.unwrap()))
                 .author(|a| {
                     a.name(format!("/{board}/"))
                         .icon_url("https://i.imgur.com/XcCKhYj.png")

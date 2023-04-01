@@ -2,7 +2,7 @@ use poise::serenity_prelude::MessageId;
 
 use crate::{Context, Error};
 
-/// repeat a message
+/// Repeat a message
 #[poise::command(slash_command, owners_only, ephemeral)]
 pub async fn echo(
     ctx: Context<'_>,
