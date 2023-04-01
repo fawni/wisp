@@ -1,8 +1,16 @@
 use serde::Deserialize;
 
+pub async fn get_catalog(board: &String) -> Result<Catalog, reqwest::Error> {
+    reqwest::get(&format!("https://a.4cdn.org/{board}/catalog.json"))
+        .await?
+        .json::<Catalog>()
+        .await
+}
+
+pub type Catalog = Vec<Page>;
+
 #[derive(Debug, Deserialize, Clone)]
-pub struct Catalog {
-    pub page: u8,
+pub struct Page {
     pub threads: Vec<CatalogThread>,
 }
 
@@ -14,6 +22,19 @@ pub struct CatalogThread {
 #[derive(Debug, Deserialize, Clone)]
 pub struct Thread {
     pub posts: Vec<Post>,
+}
+
+impl Thread {
+    pub async fn from(board: &String, thread_no: u32) -> Result<Thread, reqwest::Error> {
+        reqwest::get(&format!(
+            "https://a.4cdn.org/{board}/thread/{thread_no}.json",
+            board = board,
+            thread_no = thread_no
+        ))
+        .await?
+        .json::<Thread>()
+        .await
+    }
 }
 
 #[derive(Debug, Deserialize, Clone)]

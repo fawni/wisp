@@ -1,25 +1,23 @@
-use crate::{api::xkcd::Comic, Context, Error, ACCENT_COLOR};
+use crate::{
+    sources::xkcd::{Comic, BASE_URL},
+    Context, Error, ACCENT_COLOR,
+};
 use nanorand::{Rng, WyRand};
-
-const BASE_URL: &str = "https://xkcd.com";
-const LATEST_URL: &str = "https://xkcd.com/info.0.json";
 
 /// Get an xkcd comic
 #[poise::command(prefix_command, slash_command)]
 pub async fn xkcd(
     ctx: Context<'_>,
-    #[description = "specific comic to retrieve"] id: Option<u32>,
+    #[description = "specific comic to retrieve"] id_: Option<u32>,
 ) -> Result<(), Error> {
-    let latest = reqwest::get(LATEST_URL).await?.json::<Comic>().await?.num;
-    let n = match id {
+    let latest = Comic::latest().await?.num;
+
+    let id = match id_ {
         Some(n) if n <= latest => n,
         _ => WyRand::new().generate_range(1..=latest),
     };
 
-    let comic = reqwest::get(&format!("{BASE_URL}/{n}.json"))
-        .await?
-        .json::<Comic>()
-        .await?;
+    let comic = Comic::from(id).await?;
 
     ctx.send(|r| {
         r.embed(|r| {

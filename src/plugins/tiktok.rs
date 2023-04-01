@@ -2,7 +2,7 @@ use paris::info;
 use poise::serenity_prelude::{AttachmentType, Context, Message, ReactionType, Typing};
 use reqwest::redirect;
 
-use crate::{api::tiktok::Tiktok, Error};
+use crate::{sources::tiktok::Tiktok, Error};
 
 pub fn matches(message: &Message) -> bool {
     let re = Tiktok::valid_urls();

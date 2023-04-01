@@ -1,5 +1,5 @@
 use crate::{
-    api::fourchan::{Catalog, Post, Thread},
+    sources::fourchan::{get_catalog, Post, Thread},
     Context, Error, ACCENT_COLOR,
 };
 use chrono::{DateTime, NaiveDateTime, Utc};
@@ -10,20 +10,12 @@ use nanorand::{Rng, WyRand};
 pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
     ctx.defer().await?;
     let mut rng = WyRand::new();
-    let board = "wsg";
+    let board = "wsg".to_owned();
 
-    let catalog = reqwest::get(&format!("https://a.4cdn.org/{board}/catalog.json"))
-        .await?
-        .json::<Vec<Catalog>>()
-        .await?;
+    let catalog = get_catalog(&board).await?;
     let thread_no = catalog[rng.generate_range(0..9)].threads[rng.generate_range(0..14)].no;
 
-    let thread = reqwest::get(&format!(
-        "https://a.4cdn.org/{board}/thread/{thread_no}.json"
-    ))
-    .await?
-    .json::<Thread>()
-    .await?;
+    let thread = Thread::from(&board, thread_no).await?;
 
     let posts = thread
         .posts

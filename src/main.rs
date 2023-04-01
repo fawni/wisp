@@ -11,9 +11,9 @@ use commands::{
 use lazy_static::lazy_static;
 use serde::Deserialize;
 
-mod api;
 mod commands;
-mod modules;
+mod plugins;
+mod sources;
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Data, Error>;
@@ -33,7 +33,7 @@ async fn event_listener(
     _user_data: &Data,
 ) -> Result<(), Error> {
     if let poise::Event::Message { new_message: msg } = event {
-        modules::handle(ctx.clone(), msg.clone()).await?;
+        plugins::handle(ctx.clone(), msg.clone()).await?;
     }
 
     Ok(())

@@ -1,5 +1,5 @@
 use crate::{
-    api::fourchan::{Catalog, Post, Thread},
+    sources::fourchan::{get_catalog, Post, Thread},
     Context, Error, ACCENT_COLOR,
 };
 use chrono::{DateTime, NaiveDateTime, Utc};
@@ -23,19 +23,11 @@ pub async fn cute(
     let board = board
         .unwrap_or_else(|| String::from(cute_boards[rng.generate_range(0..cute_boards.len())]));
 
-    let catalog = reqwest::get(&format!("https://a.4cdn.org/{board}/catalog.json"))
-        .await?
-        .json::<Vec<Catalog>>()
-        .await?;
+    let catalog = get_catalog(&board).await?;
 
     let thread_no = catalog[rng.generate_range(0..9)].threads[rng.generate_range(0..14)].no;
 
-    let thread = reqwest::get(&format!(
-        "https://a.4cdn.org/{board}/thread/{thread_no}.json"
-    ))
-    .await?
-    .json::<Thread>()
-    .await?;
+    let thread = Thread::from(&board, thread_no).await?;
 
     let posts = thread
         .posts
