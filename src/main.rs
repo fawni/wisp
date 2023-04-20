@@ -1,15 +1,8 @@
 use std::time::Duration;
 
+use lazy_static::lazy_static;
 use paris::{info, success};
 use poise::serenity_prelude::{self as serenity, Activity, OnlineStatus};
-
-use commands::{
-    misc::{avatar::avatar, cute::cute, help::help, ping::ping, webm::webm, xkcd::xkcd},
-    moderation::clear::clear,
-    owner::echo::echo,
-};
-use lazy_static::lazy_static;
-use serde::Deserialize;
 
 mod commands;
 mod plugins;
@@ -33,16 +26,10 @@ async fn event_listener(
     _user_data: &Data,
 ) -> Result<(), Error> {
     if let poise::Event::Message { new_message: msg } = event {
-        plugins::handle(ctx.clone(), msg.clone()).await?;
+        plugins::handle_message(ctx.clone(), msg.clone()).await?;
     }
 
     Ok(())
-}
-
-#[derive(Deserialize)]
-pub struct Config {
-    pub prefix: String,
-    pub accent_color: String,
 }
 
 #[tokio::main]
@@ -55,14 +42,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
         .options(poise::FrameworkOptions {
             commands: vec![
-                help(),
-                ping(),
-                avatar(),
-                echo(),
-                clear(),
-                cute(),
-                webm(),
-                xkcd(),
+                commands::misc::help::help(),
+                commands::misc::ping::ping(),
+                commands::misc::avatar::avatar(),
+                commands::owner::echo::echo(),
+                commands::moderation::clear::clear(),
+                commands::misc::cute::cute(),
+                commands::misc::webm::webm(),
+                commands::misc::xkcd::xkcd(),
             ],
             post_command: |ctx| {
                 Box::pin(async move {

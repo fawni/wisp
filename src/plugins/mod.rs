@@ -4,7 +4,7 @@ use crate::Error;
 
 mod tiktok;
 
-pub async fn handle(ctx: Context, msg: Message) -> Result<(), Error> {
+pub async fn handle_message(ctx: Context, msg: Message) -> Result<(), Error> {
     if tiktok::matches(&msg) {
         tiktok::reembed(ctx, msg).await?;
     };
