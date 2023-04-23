@@ -19,7 +19,6 @@ chrono = "0.4.23"
 chrono-tz = "0.8.1"
 lazy_static = "1.4.0"
 nanorand = "0.7.0"
-system_shutdown = "4.0.1"
 regex = "1.7.2"
 
 [dependencies.serenity]
