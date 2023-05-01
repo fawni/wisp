@@ -1,11 +1,11 @@
 use crate::{
     sources::xkcd::{Comic, BASE_URL},
-    Context, Error, ACCENT_COLOR,
+    Context, Error,
 };
 use nanorand::{Rng, WyRand};
 
 /// Get an xkcd comic
-#[poise::command(prefix_command, slash_command)]
+#[poise::command(prefix_command, track_edits, slash_command)]
 pub async fn xkcd(
     ctx: Context<'_>,
     #[description = "specific comic to retrieve"] id_: Option<u32>,
@@ -29,7 +29,7 @@ pub async fn xkcd(
             .title(format!("**#{}** {}", comic.num, comic.safe_title))
             .description(comic.alt)
             .image(comic.img)
-            .color(*ACCENT_COLOR)
+            .color(0xE83F80)
             .footer(|f| f.text(format!("{}/{}/{}", comic.day, comic.month, comic.year)))
         })
         .components(|c| {

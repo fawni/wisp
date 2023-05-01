@@ -1,6 +1,6 @@
 use crate::{
     sources::fourchan::{get_catalog, Post, Thread},
-    Context, Error, ACCENT_COLOR,
+    Context, Error,
 };
 use chrono::{DateTime, NaiveDateTime, Utc};
 use nanorand::{Rng, WyRand};
@@ -10,7 +10,7 @@ async fn cute_boards<'a>(_ctx: Context<'_>, _partial: &'a str) -> Vec<String> {
 }
 
 /// Get a /cute/ picture
-#[poise::command(prefix_command, slash_command)]
+#[poise::command(prefix_command, track_edits, slash_command)]
 pub async fn cute(
     ctx: Context<'_>,
     #[autocomplete = "cute_boards"]
@@ -41,7 +41,7 @@ pub async fn cute(
     ctx.send(|r| {
         r.embed(|r| {
             r.image(image)
-                .color(*ACCENT_COLOR)
+                .color(0xE83F80)
                 .title(format!("No. {}", post.no))
                 .description(format!("{}{ext}", post.filename.unwrap()))
                 .author(|a| {

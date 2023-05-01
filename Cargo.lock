@@ -2038,7 +2038,6 @@ dependencies = [
  "chrono",
  "chrono-tz",
  "dotenvy",
- "lazy_static",
  "nanorand",
  "paris",
  "poise",
@@ -2046,5 +2045,6 @@ dependencies = [
  "reqwest",
  "serde",
  "serenity",
+ "thiserror",
  "tokio",
 ]

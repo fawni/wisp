@@ -1,12 +1,12 @@
 use crate::{
     sources::fourchan::{get_catalog, Post, Thread},
-    Context, Error, ACCENT_COLOR,
+    Context, Error,
 };
 use chrono::{DateTime, NaiveDateTime, Utc};
 use nanorand::{Rng, WyRand};
 
 /// Get a webm from /wsg/
-#[poise::command(prefix_command, slash_command)]
+#[poise::command(prefix_command, track_edits, slash_command)]
 pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
     ctx.defer().await?;
     let mut rng = WyRand::new();
@@ -28,7 +28,7 @@ pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
     // ctx.send(|r| r.content(webm)).await?;
     ctx.send(|r| {
         r.embed(|r| {
-            r.color(*ACCENT_COLOR)
+            r.color(0xE83F80)
                 .title(format!("No. {}", post.no))
                 .description(format!("{}.webm", post.filename.unwrap()))
                 .author(|a| {
