@@ -7,7 +7,18 @@ pub async fn avatar(
     ctx: Context<'_>,
     #[description = "user whose avatar will be displayed"] user: Option<User>,
 ) -> Result<(), Error> {
-    let user = user.unwrap_or_else(|| ctx.author().to_owned());
+    run_avatar(ctx, user).await?;
+    Ok(())
+}
+
+#[poise::command(context_menu_command = "Avatar")]
+pub async fn avatar_ctx(ctx: Context<'_>, user: User) -> Result<(), Error> {
+    run_avatar(ctx, Some(user)).await?;
+    Ok(())
+}
+
+async fn run_avatar(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
+    let user = user.unwrap_or_else(|| ctx.author().clone());
     let member = match ctx.guild() {
         Some(guild) => (guild.member(ctx, user.id).await).ok(),
         None => None,
@@ -17,7 +28,7 @@ pub async fn avatar(
         user.default_avatar_url(),
         user.face()
     );
-    let mut color = Color::new(0xE83F80);
+    let mut color = Color::new(0xE83_F80);
     let avatar = member.map_or_else(
         || user.face(),
         |member| {

@@ -6,7 +6,11 @@ pub async fn help(
     ctx: Context<'_>,
     #[description = "Specific command to show help about"] command: Option<String>,
 ) -> Result<(), Error> {
-    let config = poise::builtins::HelpConfiguration::default();
-    poise::builtins::help(ctx, command.as_deref(), config).await?;
+    poise::builtins::help(
+        ctx,
+        command.as_deref(),
+        poise::builtins::HelpConfiguration::default(),
+    )
+    .await?;
     Ok(())
 }

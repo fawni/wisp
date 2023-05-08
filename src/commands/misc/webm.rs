@@ -10,12 +10,12 @@ use nanorand::{Rng, WyRand};
 pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
     ctx.defer().await?;
     let mut rng = WyRand::new();
-    let board = "wsg".to_owned();
+    let board = "wsg";
 
-    let catalog = get_catalog(&board).await?;
+    let catalog = get_catalog(board).await?;
     let thread_no = catalog[rng.generate_range(0..9)].threads[rng.generate_range(0..14)].no;
 
-    let thread = Thread::from(&board, thread_no).await?;
+    let thread = Thread::from(board, thread_no).await?;
 
     let posts = thread
         .posts
@@ -28,7 +28,7 @@ pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
     // ctx.send(|r| r.content(webm)).await?;
     ctx.send(|r| {
         r.embed(|r| {
-            r.color(0xE83F80)
+            r.color(0xE83_F80)
                 .title(format!("No. {}", post.no))
                 .description(format!("{}.webm", post.filename.unwrap()))
                 .author(|a| {

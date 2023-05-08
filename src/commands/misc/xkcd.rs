@@ -8,11 +8,11 @@ use nanorand::{Rng, WyRand};
 #[poise::command(prefix_command, track_edits, slash_command)]
 pub async fn xkcd(
     ctx: Context<'_>,
-    #[description = "specific comic to retrieve"] id_: Option<u32>,
+    #[description = "specific comic to retrieve"] id: Option<u32>,
 ) -> Result<(), Error> {
     let latest = Comic::latest().await?.num;
 
-    let id = match id_ {
+    let id = match id {
         Some(n) if n <= latest => n,
         _ => WyRand::new().generate_range(1..=latest),
     };
@@ -29,7 +29,7 @@ pub async fn xkcd(
             .title(format!("**#{}** {}", comic.num, comic.safe_title))
             .description(comic.alt)
             .image(comic.img)
-            .color(0xE83F80)
+            .color(0xE83_F80)
             .footer(|f| f.text(format!("{}/{}/{}", comic.day, comic.month, comic.year)))
         })
         .components(|c| {

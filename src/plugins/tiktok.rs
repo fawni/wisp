@@ -76,7 +76,7 @@ pub async fn reembed(ctx: Context, mut msg: Message) -> Result<(), Error> {
                 .field("Likes", tiktok.statistics.likes, true)
                 .field("Comments", tiktok.statistics.comments, true)
                 .field("Views", tiktok.statistics.views, true)
-                .color(0xF82054)
+                .color(0xF82_054)
             })
             .reference_message(&msg)
             .allowed_mentions(|am| am.empty_parse())

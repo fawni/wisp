@@ -20,13 +20,13 @@ pub struct Comic {
 
 impl Comic {
     pub async fn from(id: u32) -> Result<Self, reqwest::Error> {
-        reqwest::get(&format!("{BASE_URL}/{id}.json"))
+        reqwest::get(&format!("{BASE_URL}/{id}/info.0.json"))
             .await?
-            .json::<Comic>()
+            .json::<Self>()
             .await
     }
 
     pub async fn latest() -> Result<Self, reqwest::Error> {
-        reqwest::get(LATEST_URL).await?.json::<Comic>().await
+        reqwest::get(LATEST_URL).await?.json::<Self>().await
     }
 }

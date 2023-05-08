@@ -55,10 +55,15 @@ async fn post_command(ctx: Context<'_>) {
     );
 }
 
+pub fn reply_callback(_ctx: Context<'_>, reply: &mut poise::CreateReply<'_>) {
+    reply.allowed_mentions(|f| f.replied_user(false));
+    reply.reply(true);
+}
+
 async fn on_error(err: FrameworkError<'_, Data, Error>) {
     match err {
         FrameworkError::Command { error, ctx } => {
-            ctx.send(|r| r.embed(|e| e.description(error.to_string()).color(0xE83F80)))
+            ctx.send(|r| r.embed(|e| e.description(error.to_string()).color(0xE83_F80)))
                 .await
                 .expect("failed to reply with error message");
             error!(
@@ -79,7 +84,7 @@ async fn on_error(err: FrameworkError<'_, Data, Error>) {
         }
         error => {
             if let Err(e) = poise::builtins::on_error(error).await {
-                error!("Error while handling error: <red>{}</>", e)
+                error!("Error while handling error: <red>{}</>", e);
             }
         }
     }
@@ -100,15 +105,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 misc::help::help(),
                 misc::ping::ping(),
                 misc::avatar::avatar(),
+                misc::avatar::avatar_ctx(),
                 misc::spotify::spotify(),
+                misc::spotify::spotify_ctx(),
                 misc::cute::cute(),
+                misc::user::user(),
+                misc::user::user_ctx(),
                 misc::webm::webm(),
                 misc::xkcd::xkcd(),
                 moderation::clear::clear(),
                 owner::echo::echo(),
+                owner::ptolemaea::ptolemaea(),
+                owner::register::register(),
             ],
             on_error: |err| Box::pin(on_error(err)),
             post_command: |ctx| Box::pin(post_command(ctx)),
+            reply_callback: Some(|ctx, reply| reply_callback(ctx, reply)),
             prefix_options: PrefixFrameworkOptions {
                 prefix: Some(std::env::var("WISP_PREFIX")?),
                 edit_tracker: Some(EditTracker::for_timespan(Duration::from_secs(3600))),

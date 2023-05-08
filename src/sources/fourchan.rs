@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-pub async fn get_catalog(board: &String) -> Result<Catalog, reqwest::Error> {
+pub async fn get_catalog(board: &str) -> Result<Catalog, reqwest::Error> {
     reqwest::get(&format!("https://a.4cdn.org/{board}/catalog.json"))
         .await?
         .json::<Catalog>()
@@ -25,14 +25,12 @@ pub struct Thread {
 }
 
 impl Thread {
-    pub async fn from(board: &String, thread_no: u32) -> Result<Thread, reqwest::Error> {
-        reqwest::get(&format!(
-            "https://a.4cdn.org/{board}/thread/{thread_no}.json",
-            board = board,
-            thread_no = thread_no
+    pub async fn from(board: &str, thread_no: u32) -> Result<Self, reqwest::Error> {
+        reqwest::get(format!(
+            "https://a.4cdn.org/{board}/thread/{thread_no}.json"
         ))
         .await?
-        .json::<Thread>()
+        .json::<Self>()
         .await
     }
 }
@@ -48,7 +46,7 @@ pub struct Post {
 }
 
 impl Post {
-    pub fn is_sticky(&self) -> bool {
+    pub const fn is_sticky(&self) -> bool {
         self.sticky.is_some()
     }
 

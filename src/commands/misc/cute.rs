@@ -4,9 +4,16 @@ use crate::{
 };
 use chrono::{DateTime, NaiveDateTime, Utc};
 use nanorand::{Rng, WyRand};
+use poise::AutocompleteChoice;
 
-async fn cute_boards<'a>(_ctx: Context<'_>, _partial: &'a str) -> Vec<String> {
-    vec![String::from("c"), String::from("cm")]
+async fn cute_boards<'a>(
+    _ctx: Context<'_>,
+    _partial: &'a str,
+) -> impl Iterator<Item = AutocompleteChoice<&'a str>> + 'a {
+    ["c", "cm"].into_iter().map(|name| AutocompleteChoice {
+        name: format!("/{name}/"),
+        value: name,
+    })
 }
 
 /// Get a /cute/ picture
@@ -41,7 +48,7 @@ pub async fn cute(
     ctx.send(|r| {
         r.embed(|r| {
             r.image(image)
-                .color(0xE83F80)
+                .color(0xE83_F80)
                 .title(format!("No. {}", post.no))
                 .description(format!("{}{ext}", post.filename.unwrap()))
                 .author(|a| {

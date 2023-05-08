@@ -3,7 +3,6 @@ pub mod moderation;
 pub mod owner;
 
 #[derive(thiserror::Error, Debug)]
-#[allow(dead_code)]
 enum CommandError {
     #[error("This command can only be used in a guild")]
     GuildOnly,
