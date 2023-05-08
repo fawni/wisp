@@ -1,3 +1,4 @@
+use crate::serenity::{AttachmentType, ButtonStyle};
 use crate::{
     sources::fourchan::{get_catalog, Post, Thread},
     Context, Error,
@@ -52,23 +53,19 @@ pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
         .components(|c| {
             c.create_action_row(|r| {
                 r.create_button(|b| {
-                    b.label("view post")
-                        .style(poise::serenity_prelude::ButtonStyle::Link)
-                        .url(format!(
-                            "https://boards.4channel.org/{board}/thread/{thread_no}#p{}",
-                            post.no
-                        ))
+                    b.label("view post").style(ButtonStyle::Link).url(format!(
+                        "https://boards.4channel.org/{board}/thread/{thread_no}#p{}",
+                        post.no
+                    ))
                 })
                 .create_button(|b| {
-                    b.label("view thread")
-                        .style(poise::serenity_prelude::ButtonStyle::Link)
-                        .url(format!(
-                            "https://boards.4channel.org/{board}/thread/{thread_no}"
-                        ))
+                    b.label("view thread").style(ButtonStyle::Link).url(format!(
+                        "https://boards.4channel.org/{board}/thread/{thread_no}"
+                    ))
                 })
             })
         })
-        .attachment(poise::serenity_prelude::AttachmentType::from(webm.as_str()))
+        .attachment(AttachmentType::from(webm.as_str()))
     })
     .await?;
 

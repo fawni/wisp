@@ -1,5 +1,5 @@
+use crate::serenity::{Message, User};
 use crate::{Context, Error};
-use poise::serenity_prelude::{Message, User};
 
 /// Clear messages
 #[poise::command(

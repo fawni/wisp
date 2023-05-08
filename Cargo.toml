@@ -10,24 +10,19 @@ license = "ISC"
 poise = "0.5.5"
 tokio = { version = "1.28.0", features = ["macros", "rt-multi-thread"] }
 
-paris = { version = "1.5.15", features = ["timestamps", "macros"] }
 serde = { version = "1.0.162", features = ["derive"] }
+paris = { version = "1.5.15", features = ["timestamps", "macros"] }
 dotenvy = "0.15.7"
+thiserror = "1.0.40"
+
 reqwest = { version = "0.11.17", features = ["json"] }
+nanorand = "0.7.0"
+regex = "1.8.1"
 
 chrono = "0.4.24"
 chrono-tz = "0.8.2"
-nanorand = "0.7.0"
-regex = "1.8.1"
-thiserror = "1.0.40"
+
 system_shutdown = "4.0.1"
-futures = "0.3.28"
-
-[dependencies.serenity]
-version = "0.11.5"
-features = ["client", "gateway", "rustls_backend", "model", "cache"]
-default-features = false
-
 
 [profile.release]
 lto = true

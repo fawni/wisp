@@ -1,5 +1,5 @@
+use crate::serenity::{AttachmentType, Context, Message, ReactionType, Typing};
 use paris::info;
-use poise::serenity_prelude::{AttachmentType, Context, Message, ReactionType, Typing};
 use reqwest::redirect;
 
 use crate::{sources::tiktok::Tiktok, Error};
@@ -58,7 +58,7 @@ pub async fn reembed(ctx: Context, mut msg: Message) -> Result<(), Error> {
     let file = client.get(tiktok.video_url).send().await?.bytes().await?;
 
     msg.channel_id
-        .send_message(&ctx, |m| -> &mut poise::serenity_prelude::CreateMessage {
+        .send_message(&ctx, |m| {
             m.add_file(AttachmentType::Bytes {
                 data: file.as_ref().into(),
                 filename: format!("{aweme_id}.mp4"),

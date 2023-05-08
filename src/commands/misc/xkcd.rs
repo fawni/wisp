@@ -1,3 +1,4 @@
+use crate::serenity::ButtonStyle;
 use crate::{
     sources::xkcd::{Comic, BASE_URL},
     Context, Error,
@@ -36,7 +37,7 @@ pub async fn xkcd(
             c.create_action_row(|r| {
                 r.create_button(|b| {
                     b.label("view on xkcd.com")
-                        .style(poise::serenity_prelude::ButtonStyle::Link)
+                        .style(ButtonStyle::Link)
                         .url(format!("{}/{}", BASE_URL, comic.num))
                 })
             })

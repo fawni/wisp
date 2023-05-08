@@ -1,5 +1,5 @@
+use crate::serenity::{Color, User};
 use crate::{Context, Error};
-use poise::serenity_prelude::{Color, User};
 
 /// Display a user's avatar
 #[poise::command(prefix_command, track_edits, slash_command, aliases("av", "pfp"))]

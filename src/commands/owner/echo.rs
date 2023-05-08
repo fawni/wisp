@@ -1,4 +1,4 @@
-use poise::serenity_prelude::Message;
+use crate::serenity::Message;
 
 use crate::{Context, Error};
 
