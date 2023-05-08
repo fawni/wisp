@@ -39,49 +39,51 @@ async fn run_user(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
         .with_timezone(&Tz::Africa__Cairo)
         .format("%d %b %Y, %I:%M:%S %p");
 
-    let perms = if let Ok(perms) = member.permissions(ctx) {
-        if user.id == guild.owner_id {
-            "Owner".to_string()
-        } else if perms.administrator() {
-            "Administrator".to_string()
-        } else if perms.is_empty() {
-            "None".to_string()
-        } else {
-            perms.to_string()
-        }
-    } else {
-        "None".to_string()
-    };
-
-    let (roles, roles_count) = if let Some(roles) = member.roles(ctx) {
-        (
-            if roles.is_empty() {
-                "None".to_string()
+    let perms = member.permissions(ctx).map_or_else(
+        |_| "None".to_owned(),
+        |perms| {
+            if user.id == guild.owner_id {
+                "Owner".to_owned()
+            } else if perms.administrator() {
+                "Administrator".to_owned()
+            } else if perms.is_empty() {
+                "None".to_owned()
             } else {
-                roles
-                    .iter()
-                    .map(|r| r.mention().to_string())
-                    .collect::<Vec<_>>()
-                    .join(" ")
-            },
-            roles.len(),
-        )
-    } else {
-        ("None".to_string(), 0)
-    };
+                perms.to_string()
+            }
+        },
+    );
+
+    let (roles, roles_count) = member.roles(ctx).map_or_else(
+        || ("None".to_string(), 0),
+        |roles| {
+            (
+                if roles.is_empty() {
+                    "None".to_string()
+                } else {
+                    roles
+                        .iter()
+                        .map(|r| r.mention().to_string())
+                        .collect::<Vec<_>>()
+                        .join(" ")
+                },
+                roles.len(),
+            )
+        },
+    );
 
     ctx.send(|r| {
         r.embed(|e| {
             e.author(|a| a.name(user.tag()).icon_url(user.face()))
                 .thumbnail(user.face())
-                .color(member.colour(ctx).unwrap_or(Color::from(0xE83_F80)))
+                .color(member.colour(ctx).unwrap_or_else(|| Color::from(0xE83_F80)))
                 .description(user.mention())
                 .fields([
                     ("Joined", joined_at.to_string(), true),
                     ("Created", created_at.to_string(), true),
                     ("Bot", user.bot.to_string(), false),
                     (&format!("Roles [{roles_count}]"), roles, true),
-                    ("Permissions", perms.to_string(), false),
+                    ("Permissions", perms, false),
                 ])
                 .footer(|f| f.text(format!("ID: {}", user.id)))
         })

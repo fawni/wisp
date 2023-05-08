@@ -17,7 +17,7 @@ pub async fn spotify_ctx(ctx: Context<'_>, user: User) -> Result<(), Error> {
     Ok(())
 }
 
-pub async fn run_spotify(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
+async fn run_spotify(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
     let user = user.unwrap_or_else(|| ctx.author().clone());
     let guild = ctx.guild().ok_or(CommandError::GuildOnly)?;
     let activities = &guild
