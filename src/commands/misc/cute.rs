@@ -1,4 +1,5 @@
 use crate::serenity::ButtonStyle;
+use crate::COLOR;
 use crate::{
     sources::fourchan::{get_catalog, Post, Thread},
     Context, Error,
@@ -18,7 +19,7 @@ async fn cute_boards<'a>(
 }
 
 /// Get a /cute/ picture
-#[poise::command(prefix_command, track_edits, slash_command)]
+#[poise::command(prefix_command, track_edits, slash_command, aliases("c", "cm"))]
 pub async fn cute(
     ctx: Context<'_>,
     #[autocomplete = "cute_boards"]
@@ -49,7 +50,7 @@ pub async fn cute(
     ctx.send(|r| {
         r.embed(|r| {
             r.image(image)
-                .color(0xE83_F80)
+                .color(*COLOR)
                 .title(format!("No. {}", post.no))
                 .description(format!("{}{ext}", post.filename.unwrap()))
                 .author(|a| {

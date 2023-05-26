@@ -1,4 +1,5 @@
 use crate::serenity::{AttachmentType, ButtonStyle};
+use crate::COLOR;
 use crate::{
     sources::fourchan::{get_catalog, Post, Thread},
     Context, Error,
@@ -29,7 +30,7 @@ pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
     // ctx.send(|r| r.content(webm)).await?;
     ctx.send(|r| {
         r.embed(|r| {
-            r.color(0xE83_F80)
+            r.color(*COLOR)
                 .title(format!("No. {}", post.no))
                 .description(format!("{}.webm", post.filename.unwrap()))
                 .author(|a| {

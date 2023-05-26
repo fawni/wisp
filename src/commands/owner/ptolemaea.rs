@@ -1,4 +1,4 @@
-use crate::{Context, Error};
+use crate::{Context, Error, COLOR};
 
 async fn commands<'a>(_ctx: Context<'_>, _partial: &'a str) -> impl Iterator<Item = &'a str> + 'a {
     ["shutdown", "reboot"].into_iter()
@@ -14,12 +14,12 @@ pub async fn ptolemaea(
 ) -> Result<(), Error> {
     match cmd.as_str() {
         "shutdown" => {
-            ctx.send(|r| r.embed(|e| e.description("Shutting down...").color(0xE83_F80)))
+            ctx.send(|r| r.embed(|e| e.description("Shutting down...").color(*COLOR)))
                 .await?;
             system_shutdown::shutdown()?;
         }
         "reboot" => {
-            ctx.send(|r| r.embed(|e| e.description("Rebooting...").color(0xE83_F80)))
+            ctx.send(|r| r.embed(|e| e.description("Rebooting...").color(*COLOR)))
                 .await?;
             system_shutdown::reboot()?;
         }

@@ -1,5 +1,5 @@
-use crate::serenity::{Color, User};
-use crate::{Context, Error};
+use crate::serenity::User;
+use crate::{Context, Error, COLOR};
 
 /// Display a user's avatar
 #[poise::command(prefix_command, track_edits, slash_command, aliases("av", "pfp"))]
@@ -28,7 +28,7 @@ async fn run_avatar(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
         user.default_avatar_url(),
         user.face()
     );
-    let mut color = Color::new(0xE83_F80);
+    let mut color = *COLOR;
     let avatar = member.map_or_else(
         || user.face(),
         |member| {

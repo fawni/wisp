@@ -1,4 +1,5 @@
 use crate::serenity::ButtonStyle;
+use crate::COLOR;
 use crate::{
     sources::xkcd::{Comic, BASE_URL},
     Context, Error,
@@ -30,7 +31,7 @@ pub async fn xkcd(
             .title(format!("**#{}** {}", comic.num, comic.safe_title))
             .description(comic.alt)
             .image(comic.img)
-            .color(0xE83_F80)
+            .color(*COLOR)
             .footer(|f| f.text(format!("{}/{}/{}", comic.day, comic.month, comic.year)))
         })
         .components(|c| {

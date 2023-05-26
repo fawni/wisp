@@ -1,9 +1,10 @@
 use std::time::Duration;
 
 use commands::{misc, moderation, owner};
+use once_cell::sync::Lazy;
 use paris::{error, info, success};
 use poise::{
-    serenity_prelude::{self as serenity, Activity, GatewayIntents, OnlineStatus},
+    serenity_prelude::{self as serenity, Activity, Color, GatewayIntents, OnlineStatus},
     EditTracker, Event, Framework, FrameworkContext, FrameworkError, FrameworkOptions,
     PrefixFrameworkOptions,
 };
@@ -14,6 +15,12 @@ mod sources;
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Data, Error>;
+
+pub static TOKEN: Lazy<String> = Lazy::new(|| std::env::var("WISP_TOKEN").unwrap());
+pub static PREFIX: Lazy<String> = Lazy::new(|| std::env::var("WISP_PREFIX").unwrap());
+pub static COLOR: Lazy<Color> = Lazy::new(|| {
+    Color::new(u32::from_str_radix(&std::env::var("WISP_COLOR").unwrap(), 16).unwrap())
+});
 
 pub struct Data {}
 
@@ -63,7 +70,7 @@ pub fn reply_callback(_ctx: Context<'_>, reply: &mut poise::CreateReply<'_>) {
 async fn on_error(err: FrameworkError<'_, Data, Error>) {
     match err {
         FrameworkError::Command { error, ctx } => {
-            ctx.send(|r| r.embed(|e| e.description(error.to_string()).color(0xE83_F80)))
+            ctx.send(|r| r.embed(|e| e.description(error.to_string()).color(*COLOR)))
                 .await
                 .expect("failed to reply with error message");
             error!(
@@ -94,7 +101,7 @@ async fn on_error(err: FrameworkError<'_, Data, Error>) {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenvy::dotenv().ok();
     let framework = Framework::builder()
-        .token(std::env::var("WISP_TOKEN").expect("missing WISP_TOKEN env var"))
+        .token(TOKEN.clone())
         .intents(
             GatewayIntents::non_privileged()
                 | GatewayIntents::MESSAGE_CONTENT
@@ -122,7 +129,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             post_command: |ctx| Box::pin(post_command(ctx)),
             reply_callback: Some(|ctx, reply| reply_callback(ctx, reply)),
             prefix_options: PrefixFrameworkOptions {
-                prefix: Some(std::env::var("WISP_PREFIX")?),
+                prefix: Some(PREFIX.clone()),
                 edit_tracker: Some(EditTracker::for_timespan(Duration::from_secs(3600))),
                 ..Default::default()
             },

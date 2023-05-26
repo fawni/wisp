@@ -1,4 +1,7 @@
-use crate::serenity::{Color, Mentionable, User};
+use crate::{
+    serenity::{Mentionable, User},
+    COLOR,
+};
 use chrono_tz::Tz;
 
 use crate::{commands::CommandError, Context, Error};
@@ -76,7 +79,7 @@ async fn run_user(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
         r.embed(|e| {
             e.author(|a| a.name(user.tag()).icon_url(user.face()))
                 .thumbnail(user.face())
-                .color(member.colour(ctx).unwrap_or_else(|| Color::from(0xE83_F80)))
+                .color(member.colour(ctx).unwrap_or(*COLOR))
                 .description(user.mention())
                 .fields([
                     ("Joined", joined_at.to_string(), true),
