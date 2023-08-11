@@ -1,25 +1,22 @@
-use crate::serenity::{AttachmentType, ButtonStyle};
-use crate::COLOR;
-use crate::{
-    sources::fourchan::{get_catalog, Post, Thread},
-    Context, Error,
-};
 use chrono::{DateTime, NaiveDateTime, Utc};
 use nanorand::{Rng, WyRand};
+
+use crate::{
+    serenity::{AttachmentType, ButtonStyle},
+    sources::fourchan::{self, Post, Thread},
+    Context, Error, COLOR,
+};
 
 /// Get a webm from /wsg/
 #[poise::command(prefix_command, track_edits, slash_command)]
 pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
-    ctx.defer().await?;
     let mut rng = WyRand::new();
+
     let board = "wsg";
-
-    let catalog = get_catalog(board).await?;
+    let catalog = fourchan::get_catalog(board).await?;
     let thread_no = catalog[rng.generate_range(0..9)].threads[rng.generate_range(0..14)].no;
-
-    let thread = Thread::from(board, thread_no).await?;
-
-    let posts = thread
+    let posts = Thread::from(board, thread_no)
+        .await?
         .posts
         .into_iter()
         .filter(|p| p.is_webm() && !p.is_sticky())
@@ -27,6 +24,7 @@ pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
     let post = posts[rng.generate_range(0..posts.len())].clone();
     let webm = format!("https://i.4cdn.org/{board}/{}.webm", post.tim.unwrap());
 
+    ctx.defer().await?;
     // ctx.send(|r| r.content(webm)).await?;
     ctx.send(|r| {
         r.embed(|r| {

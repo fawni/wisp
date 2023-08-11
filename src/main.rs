@@ -2,7 +2,6 @@ use std::time::Duration;
 
 use commands::{misc, moderation, owner};
 use once_cell::sync::Lazy;
-use paris::{error, info, success};
 use poise::{
     serenity_prelude::{self as serenity, Activity, Color, GatewayIntents, OnlineStatus},
     EditTracker, Event, Framework, FrameworkContext, FrameworkError, FrameworkOptions,
@@ -27,15 +26,12 @@ pub struct Data {}
 async fn context_location(ctx: Context<'_>) -> String {
     if let Some(guild) = ctx.guild() {
         if let Some(channel) = ctx.channel_id().name(&ctx).await {
-            format!(
-                "<magenta>#{}, {}</> (<italic>{}</>)",
-                channel, guild.name, guild.id
-            )
+            format!("#{}, {} ({})", channel, guild.name, guild.id)
         } else {
-            format!("<magenta>{}</> (<italic>{}</>)", guild.name, guild.id)
+            format!("{} ({})", guild.name, guild.id)
         }
     } else {
-        format!("<magenta>{}'s dms</>", ctx.author().tag())
+        format!("{}'s dms", ctx.author().tag())
     }
 }
 
@@ -53,8 +49,8 @@ async fn event_listener(
 }
 
 async fn post_command(ctx: Context<'_>) {
-    info!(
-        "executed <green>{}</> by <bold>{}</> (<italic>{}</>) in {}",
+    twink::purr!(
+        "executed <cyan>{}</> by <bold>{}</> (<italic>{}</>) in <purple>{}</>",
         ctx.command().qualified_name,
         ctx.author().tag(),
         ctx.author().id,
@@ -73,8 +69,8 @@ async fn on_error(err: FrameworkError<'_, Data, Error>) {
             ctx.send(|r| r.embed(|e| e.description(error.to_string()).color(*COLOR)))
                 .await
                 .expect("failed to reply with error message");
-            error!(
-                "command <green>{}</> returned error <bold><red>{:?}</> by <bold>{}</> (<italic>{}</>) in {}",
+            twink::hiss!(
+                "command <cyan>{}</> returned error <b><red>{:?}</> by <bold>{}</> (<italic>{}</>) in <purple>{}</>",
                 ctx.command().name,
                 error,
                 ctx.author().tag(),
@@ -83,15 +79,15 @@ async fn on_error(err: FrameworkError<'_, Data, Error>) {
             );
         }
         FrameworkError::EventHandler { error, event, .. } => {
-            error!(
-                "EventHandler returned error during <green>{:?}</> event: <red>{:?}</>",
+            twink::hiss!(
+                "EventHandler returned error during <cyan>{:?}</> event: <red>{:?}</>",
                 event.name(),
                 error
             );
         }
         error => {
             if let Err(e) = poise::builtins::on_error(error).await {
-                error!("Error while handling error: <red>{}</>", e);
+                twink::hiss!("Error while handling error: <red>{}</>", e);
             }
         }
     }
@@ -146,7 +142,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     OnlineStatus::DoNotDisturb,
                 )
                 .await;
-                success!("<bold>{}</> is <green>connected!</>", ready.user.name);
+                twink::purr!("logged in as <bold><purple>@{}</>", ready.user.tag());
                 Ok(Data {})
             })
         });

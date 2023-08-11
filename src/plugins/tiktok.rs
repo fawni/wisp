@@ -1,7 +1,4 @@
 use crate::serenity::{AttachmentType, Context, Message, ReactionType, Typing};
-use paris::info;
-use reqwest::redirect;
-
 use crate::{sources::tiktok::Tiktok, Error};
 
 pub fn matches(message: &Message) -> bool {
@@ -16,7 +13,7 @@ pub async fn reembed(ctx: Context, mut msg: Message) -> Result<(), Error> {
     };
 
     let client = reqwest::Client::builder()
-        .redirect(redirect::Policy::custom(|attempt| attempt.stop()))
+        .redirect(reqwest::redirect::Policy::custom(|attempt| attempt.stop()))
         .build()?;
 
     let mut content = msg.content.clone();
@@ -28,17 +25,17 @@ pub async fn reembed(ctx: Context, mut msg: Message) -> Result<(), Error> {
     let aweme_id = &re[0].captures(&content).unwrap()[1];
     let location = if let Some(channel) = msg.channel(&ctx).await?.guild() {
         format!(
-            "<magenta>#{}, {}</> (<italic>{}</>)",
+            "#{}, {} (<italic>{})",
             channel.name(),
             channel.guild(&ctx).unwrap().name,
             channel.guild_id
         )
     } else {
-        format!("<magenta>{}'s dms</>", msg.author.tag())
+        format!("{}'s dms", msg.author.tag())
     };
 
-    info!(
-        "Tiktok <bold>{}</> by <bold>{}</> (<italic>{}</>) in {}",
+    twink::mrrr!(
+        "Tiktok <bold>{}</> by <bold>{}</> (<italic>{}</>) in <purple>{}</>",
         aweme_id,
         msg.author.tag(),
         msg.author.id,

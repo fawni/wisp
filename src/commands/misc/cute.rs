@@ -1,12 +1,12 @@
-use crate::serenity::ButtonStyle;
-use crate::COLOR;
-use crate::{
-    sources::fourchan::{get_catalog, Post, Thread},
-    Context, Error,
-};
 use chrono::{DateTime, NaiveDateTime, Utc};
 use nanorand::{Rng, WyRand};
 use poise::AutocompleteChoice;
+
+use crate::{
+    serenity::ButtonStyle,
+    sources::fourchan::{self, Post, Thread},
+    Context, Error, COLOR,
+};
 
 async fn cute_boards<'a>(
     _ctx: Context<'_>,
@@ -31,14 +31,10 @@ pub async fn cute(
     let cute_boards = vec!["c", "cm"];
     let board = board
         .unwrap_or_else(|| String::from(cute_boards[rng.generate_range(0..cute_boards.len())]));
-
-    let catalog = get_catalog(&board).await?;
-
+    let catalog = fourchan::get_catalog(&board).await?;
     let thread_no = catalog[rng.generate_range(0..9)].threads[rng.generate_range(0..14)].no;
-
-    let thread = Thread::from(&board, thread_no).await?;
-
-    let posts = thread
+    let posts = Thread::from(&board, thread_no)
+        .await?
         .posts
         .into_iter()
         .filter(|p| p.is_image() && !p.is_sticky())
