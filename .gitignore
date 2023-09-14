@@ -7,8 +7,6 @@
 
 # production
 .env
-.cargo
-*.bat
 
 # dev
 tmp/

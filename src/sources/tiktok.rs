@@ -60,11 +60,25 @@ impl VideoAuthor {
 #[derive(Deserialize, Debug, Clone)]
 pub struct VideoStatistics {
     #[serde(rename = "digg_count")]
-    pub likes: u32,
+    likes: u32,
     #[serde(rename = "comment_count")]
-    pub comments: u32,
+    comments: u32,
     #[serde(rename = "play_count")]
-    pub views: u32,
+    views: u32,
+}
+
+impl VideoStatistics {
+    pub fn likes(&self) -> String {
+        self.likes.format()
+    }
+
+    pub fn comments(&self) -> String {
+        self.comments.format()
+    }
+
+    pub fn views(&self) -> String {
+        self.views.format()
+    }
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -90,4 +104,28 @@ struct ApiVideo {
 #[derive(Deserialize, Debug, Clone)]
 struct PlayAddr {
     url_list: Vec<String>,
+}
+
+trait NumberFormat {
+    fn format(&self) -> String;
+}
+
+impl NumberFormat for u32 {
+    fn format(&self) -> String {
+        let mut num = self.to_string();
+        let len = num.len();
+
+        if len > 3 {
+            let mut i = len % 3;
+            if i == 0 {
+                i = 3;
+            }
+            while i < num.len() {
+                num.insert(i, ',');
+                i += 4;
+            }
+        }
+
+        num
+    }
 }

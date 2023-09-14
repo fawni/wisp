@@ -2,11 +2,9 @@ use chrono::{DateTime, NaiveDateTime, Utc};
 use nanorand::{Rng, WyRand};
 use poise::AutocompleteChoice;
 
-use crate::{
-    serenity::ButtonStyle,
-    sources::fourchan::{self, Post, Thread},
-    Context, Error, COLOR,
-};
+use crate::serenity::ButtonStyle;
+use crate::sources::fourchan::{self, Post, Thread};
+use crate::{Context, Error, COLOR};
 
 async fn cute_boards<'a>(
     _ctx: Context<'_>,
@@ -28,7 +26,7 @@ pub async fn cute(
 ) -> Result<(), Error> {
     let mut rng = WyRand::new();
 
-    let cute_boards = vec!["c", "cm"];
+    let cute_boards = ["c", "cm"];
     let board = board
         .unwrap_or_else(|| String::from(cute_boards[rng.generate_range(0..cute_boards.len())]));
     let catalog = fourchan::get_catalog(&board).await?;
@@ -58,9 +56,9 @@ pub async fn cute(
                     f.text(format!(
                         "{} | {}",
                         post.tim.unwrap(),
-                        DateTime::<Utc>::from_utc(
+                        DateTime::<Utc>::from_naive_utc_and_offset(
                             NaiveDateTime::from_timestamp_opt(post.time, 0).unwrap(),
-                            Utc,
+                            Utc
                         )
                         .with_timezone(&chrono_tz::Tz::Africa__Cairo)
                         .format("%I:%M:%S %p • %d %b %Y")

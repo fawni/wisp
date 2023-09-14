@@ -12,7 +12,7 @@ pub async fn clear(
     #[min = 1]
     #[max = 1000]
     #[description = "how many messages to delete"]
-    amount: u32,
+    amount: u16,
     #[description = "only from user"] user: Option<User>,
 ) -> Result<(), Error> {
     let mut reply = ctx.say("clearing...").await?.into_message().await?;

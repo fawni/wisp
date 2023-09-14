@@ -25,7 +25,7 @@ pub async fn reembed(ctx: Context, mut msg: Message) -> Result<(), Error> {
     let aweme_id = &re[0].captures(&content).unwrap()[1];
     let location = if let Some(channel) = msg.channel(&ctx).await?.guild() {
         format!(
-            "#{}, {} (<italic>{})",
+            "#{}, {} ({})",
             channel.name(),
             channel.guild(&ctx).unwrap().name,
             channel.guild_id
@@ -43,8 +43,7 @@ pub async fn reembed(ctx: Context, mut msg: Message) -> Result<(), Error> {
     );
 
     let Ok(tiktok) = Tiktok::from(aweme_id).await else {
-        msg
-            .react(ctx, ReactionType::Unicode(String::from("❌")))
+        msg.react(ctx, ReactionType::Unicode(String::from("❌")))
             .await?;
 
         return Err("Invalid TikTok ID".into());
@@ -70,18 +69,17 @@ pub async fn reembed(ctx: Context, mut msg: Message) -> Result<(), Error> {
                     .icon_url(tiktok.author.avatar_url())
                 })
                 .description(tiktok.description)
-                .field("Likes", tiktok.statistics.likes, true)
-                .field("Comments", tiktok.statistics.comments, true)
-                .field("Views", tiktok.statistics.views, true)
+                .field("Likes", tiktok.statistics.likes(), true)
+                .field("Comments", tiktok.statistics.comments(), true)
+                .field("Views", tiktok.statistics.views(), true)
                 .color(0xF82_054)
             })
             .reference_message(&msg)
             .allowed_mentions(|am| am.empty_parse())
         })
         .await?;
-    _ = typing.stop();
-    // currently doesn't work idk why all g though
-    msg.suppress_embeds(&ctx).await?;
+    let _ = typing.stop();
+    msg.suppress_embeds(ctx).await?;
 
     Ok(())
 }

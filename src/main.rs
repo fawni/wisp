@@ -138,7 +138,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             Box::pin(async move {
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
                 ctx.set_presence(
-                    Some(Activity::listening("you, cutie <3")),
+                    Some(Activity::listening("you, cutie ♡")),
                     OnlineStatus::DoNotDisturb,
                 )
                 .await;

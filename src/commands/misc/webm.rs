@@ -1,11 +1,9 @@
 use chrono::{DateTime, NaiveDateTime, Utc};
 use nanorand::{Rng, WyRand};
 
-use crate::{
-    serenity::{AttachmentType, ButtonStyle},
-    sources::fourchan::{self, Post, Thread},
-    Context, Error, COLOR,
-};
+use crate::serenity::{AttachmentType, ButtonStyle};
+use crate::sources::fourchan::{self, Post, Thread};
+use crate::{Context, Error, COLOR};
 
 /// Get a webm from /wsg/
 #[poise::command(prefix_command, track_edits, slash_command)]
@@ -40,9 +38,9 @@ pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
                     f.text(format!(
                         "{} | {}",
                         post.tim.unwrap(),
-                        DateTime::<Utc>::from_utc(
+                        DateTime::<Utc>::from_naive_utc_and_offset(
                             NaiveDateTime::from_timestamp_opt(post.time, 0).unwrap(),
-                            Utc,
+                            Utc
                         )
                         .with_timezone(&chrono_tz::Tz::Africa__Cairo)
                         .format("%I:%M:%S %p • %d %b %Y")

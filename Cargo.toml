@@ -7,19 +7,19 @@ repository = "https://github.com/fawni/wisp"
 license = "ISC"
 
 [dependencies]
-poise = "0.5.5"
-tokio = { version = "1.30.0", features = ["macros", "rt-multi-thread"] }
+poise = "0.5.6"
+tokio = { version = "1.32.0", features = ["macros", "rt-multi-thread"] }
 
-serde = { version = "1.0.183", features = ["derive"] }
-twink = { version = "1.0.0", features = ["12-hour"] }
+serde = { version = "1.0.188", features = ["derive"] }
+twink = { version = "1.1.0", features = ["12-hour"] }
 dotenvy = "0.15.7"
-thiserror = "1.0.44"
+thiserror = "1.0.48"
 
-reqwest = { version = "0.11.18", features = ["json"] }
+reqwest = { version = "0.11.20", features = ["json"] }
 nanorand = "0.7.0"
-regex = "1.9.3"
+regex = "1.9.5"
 
-chrono = "0.4.26"
+chrono = "0.4.30"
 chrono-tz = "0.8.3"
 
 system_shutdown = "4.0.1"
