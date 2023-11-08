@@ -10,7 +10,7 @@ pub async fn faye(
 ) -> Result<(), Error> {
     let mut faye_ctx = FayeContext::default();
 
-    let parser = Parser::new(&expression);
+    let mut parser = Parser::new(&expression);
 
     let ast = match parser.parse() {
         Ok(ast) => ast,

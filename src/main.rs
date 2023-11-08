@@ -119,7 +119,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 misc::xkcd::xkcd(),
                 moderation::clear::clear(),
                 owner::echo::echo(),
-                owner::ptolemaea::ptolemaea(),
+                owner::sys::sys(),
                 owner::register::register(),
             ],
             on_error: |err| Box::pin(on_error(err)),

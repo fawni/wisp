@@ -6,7 +6,7 @@ async fn commands<'a>(_ctx: Context<'_>, _partial: &'a str) -> impl Iterator<Ite
 
 /// ptolemaea
 #[poise::command(prefix_command, slash_command, owners_only)]
-pub async fn ptolemaea(
+pub async fn sys(
     ctx: Context<'_>,
     #[autocomplete = "commands"]
     #[description = "command to execute"]
