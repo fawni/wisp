@@ -24,6 +24,7 @@ chrono-tz = "0.8.3"
 
 system_shutdown = "4.0.1"
 once_cell = "1.18.0"
+faye = "0.5.2"
 
 [profile.release]
 lto = true

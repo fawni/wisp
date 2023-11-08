@@ -21,7 +21,7 @@ pub static COLOR: Lazy<Color> = Lazy::new(|| {
     Color::new(u32::from_str_radix(&std::env::var("WISP_COLOR").unwrap(), 16).unwrap())
 });
 
-pub struct Data {}
+pub struct Data;
 
 async fn context_location(ctx: Context<'_>) -> String {
     if let Some(guild) = ctx.guild() {
@@ -112,6 +112,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 misc::spotify::spotify(),
                 misc::spotify::spotify_ctx(),
                 misc::cute::cute(),
+                misc::faye::faye(),
                 misc::user::user(),
                 misc::user::user_ctx(),
                 misc::webm::webm(),
@@ -123,7 +124,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             ],
             on_error: |err| Box::pin(on_error(err)),
             post_command: |ctx| Box::pin(post_command(ctx)),
-            reply_callback: Some(|ctx, reply| reply_callback(ctx, reply)),
+            reply_callback: Some(reply_callback),
             prefix_options: PrefixFrameworkOptions {
                 prefix: Some(PREFIX.clone()),
                 edit_tracker: Some(EditTracker::for_timespan(Duration::from_secs(3600))),
@@ -143,7 +144,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 )
                 .await;
                 twink::purr!("logged in as <bold><purple>@{}</>", ready.user.tag());
-                Ok(Data {})
+                Ok(Data)
             })
         });
 

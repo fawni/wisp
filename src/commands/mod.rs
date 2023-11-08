@@ -12,4 +12,10 @@ enum CommandError {
 
     #[error("User is not currently listening to Spotify")]
     NoSpotify,
+
+    #[error("Faye parser error: {0}")]
+    FayeParserError(#[from] faye::prelude::ParserError),
+
+    #[error("Faye eval error: {0}")]
+    FayeError(#[from] faye::prelude::EvalError),
 }

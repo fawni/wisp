@@ -1,5 +1,6 @@
 pub mod avatar;
 pub mod cute;
+pub mod faye;
 pub mod help;
 pub mod ping;
 pub mod spotify;
