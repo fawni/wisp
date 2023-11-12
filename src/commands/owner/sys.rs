@@ -1,3 +1,5 @@
+use std::process::Command;
+
 use crate::{Context, Error, COLOR};
 
 async fn commands<'a>(_ctx: Context<'_>, _partial: &'a str) -> impl Iterator<Item = &'a str> + 'a {
@@ -16,12 +18,12 @@ pub async fn sys(
         "shutdown" => {
             ctx.send(|r| r.embed(|e| e.description("Shutting down...").color(*COLOR)))
                 .await?;
-            system_shutdown::shutdown()?;
+            Command::new("shutdown").args(["/s", "/t", "0"]).spawn()?;
         }
         "reboot" => {
             ctx.send(|r| r.embed(|e| e.description("Rebooting...").color(*COLOR)))
                 .await?;
-            system_shutdown::reboot()?;
+            Command::new("shutdown").args(["/r", "/t", "0"]).spawn()?;
         }
         _ => return Err(Error::from("Invalid command")),
     }

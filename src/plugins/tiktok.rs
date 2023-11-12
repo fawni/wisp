@@ -79,6 +79,7 @@ pub async fn reembed(ctx: Context, mut msg: Message) -> Result<(), Error> {
         })
         .await?;
     let _ = typing.stop();
+    // TODO(upstream): suppress embeds at the start - https://github.com/serenity-rs/serenity/pull/2582
     msg.suppress_embeds(ctx).await?;
 
     Ok(())
