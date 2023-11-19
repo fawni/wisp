@@ -1,4 +1,7 @@
-use crate::serenity::{AttachmentType, Context, Message, ReactionType, Typing};
+use crate::serenity::{
+    json::{self, Value},
+    AttachmentType, CacheHttp, Context, EditMessage, Message, ReactionType, Typing,
+};
 use crate::{sources::tiktok::Tiktok, Error};
 
 pub fn matches(message: &Message) -> bool {
@@ -6,7 +9,7 @@ pub fn matches(message: &Message) -> bool {
     re[0].is_match(&message.content) || re[1].is_match(&message.content)
 }
 
-pub async fn reembed(ctx: Context, mut msg: Message) -> Result<(), Error> {
+pub async fn reembed(ctx: Context, msg: Message) -> Result<(), Error> {
     let re = Tiktok::valid_urls();
     if !re[0].is_match(&msg.content) && !re[1].is_match(&msg.content) {
         return Ok(());
@@ -49,6 +52,15 @@ pub async fn reembed(ctx: Context, mut msg: Message) -> Result<(), Error> {
         return Err("Invalid TikTok ID".into());
     };
 
+    // TODO(upstream): use the `suppress_embeds` method - https://github.com/serenity-rs/serenity/pull/2582
+    // msg.suppress_embeds(ctx).await?;
+    let mut suppress = EditMessage::default();
+    suppress.suppress_embeds(true);
+    let map = json::hashmap_to_json_map(suppress.0);
+    ctx.http()
+        .edit_message(msg.channel_id.0, msg.id.0, &Value::from(map))
+        .await?;
+
     let typing = Typing::start(ctx.http.clone(), msg.channel_id.0)?;
 
     let file = client.get(tiktok.video_url).send().await?.bytes().await?;
@@ -79,8 +91,6 @@ pub async fn reembed(ctx: Context, mut msg: Message) -> Result<(), Error> {
         })
         .await?;
     let _ = typing.stop();
-    // TODO(upstream): suppress embeds at the start - https://github.com/serenity-rs/serenity/pull/2582
-    msg.suppress_embeds(ctx).await?;
 
     Ok(())
 }
