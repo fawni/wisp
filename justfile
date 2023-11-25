@@ -14,3 +14,7 @@ lint:
 # Deploy to fly.io
 deploy:
     fly deploy --remote-only
+
+push:
+    git push
+    git push gh

@@ -1,0 +1,33 @@
+when:
+  branch: master
+  event: [push, manual]
+  path:
+    include:
+      - "Cargo.toml"
+      - "Dockerfile"
+      - "src/**/*.rs"
+
+steps:
+  publish:
+    image: woodpeckerci/plugin-docker-buildx
+    settings:
+      platforms: linux/amd64,linux/arm64/v8
+      auto_tag: true
+      repo:
+        - fawni/wisp
+        - ghcr.io/fawni/wisp
+        - codeberg.org/fawn/wisp
+      tags: latest
+      logins:
+        - registry: https://index.docker.io/v1/
+          username: fawni
+          password:
+            from_secret: DOCKER_TOKEN
+        - registry: https://ghcr.io
+          username: fawni
+          password:
+            from_secret: GITHUB_TOKEN
+        - registry: https://codeberg.org
+          username: fawn
+          password:
+            from_secret: CODEBERG_TOKEN

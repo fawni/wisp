@@ -1,3 +1,9 @@
-# wisp
+# wisp 🌼
 
-(wip) rewrite of my personal bot [fawni/sh](https://github.com/fawni/sh) to support slash commands and components 🌼
+[![status-badge](https://ci.codeberg.org/api/badges/12816/status.svg)](https://ci.codeberg.org/repos/12816)
+
+personal discord bot
+
+## license
+
+[ISC](LICENSE)
