@@ -138,11 +138,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .setup(|ctx, ready, framework| {
             Box::pin(async move {
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
-                ctx.set_presence(
-                    Some(Activity::listening("you, cutie ♡")),
-                    OnlineStatus::DoNotDisturb,
-                )
-                .await;
+                ctx.set_presence(Some(Activity::listening("동요")), OnlineStatus::Online)
+                    .await;
                 twink::purr!("logged in as <bold><purple>@{}</>", ready.user.tag());
                 Ok(Data)
             })
