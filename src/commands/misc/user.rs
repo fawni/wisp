@@ -6,29 +6,33 @@ use chrono_tz::Tz;
 
 use crate::{commands::CommandError, Context, Error};
 
-/// Query information about a Discord user
+/// User
 #[poise::command(
     prefix_command,
-    track_edits,
     slash_command,
-    guild_only,
+    track_edits,
+    subcommands("info"),
     aliases("userinfo", "whois")
 )]
-pub async fn user(
+pub async fn user(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
+    run_user_info(ctx, user).await
+}
+
+/// Query information about a Discord user
+#[poise::command(prefix_command, track_edits, slash_command, guild_only)]
+pub async fn info(
     ctx: Context<'_>,
-    #[description = "Discord profile to query information about"] user: Option<User>,
+    #[description = "User to query information about"] user: Option<User>,
 ) -> Result<(), Error> {
-    run_user(ctx, user).await?;
-    Ok(())
+    run_user_info(ctx, user).await
 }
 
 #[poise::command(context_menu_command = "User Info", guild_only)]
-pub async fn user_ctx(ctx: Context<'_>, user: User) -> Result<(), Error> {
-    run_user(ctx, Some(user)).await?;
-    Ok(())
+pub async fn user_info_ctx(ctx: Context<'_>, user: User) -> Result<(), Error> {
+    run_user_info(ctx, Some(user)).await
 }
 
-async fn run_user(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
+async fn run_user_info(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
     let user = user.unwrap_or_else(|| ctx.author().clone());
     let guild = ctx.guild().ok_or(CommandError::GuildOnly)?;
     let member = guild.member(&ctx, user.id).await?;

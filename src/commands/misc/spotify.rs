@@ -7,14 +7,12 @@ pub async fn spotify(
     ctx: Context<'_>,
     #[description = "user whose Spotify status will be checked"] user: Option<User>,
 ) -> Result<(), Error> {
-    run_spotify(ctx, user).await?;
-    Ok(())
+    run_spotify(ctx, user).await
 }
 
 #[poise::command(context_menu_command = "Spotify", guild_only)]
 pub async fn spotify_ctx(ctx: Context<'_>, user: User) -> Result<(), Error> {
-    run_spotify(ctx, Some(user)).await?;
-    Ok(())
+    run_spotify(ctx, Some(user)).await
 }
 
 async fn run_spotify(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {

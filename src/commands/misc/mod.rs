@@ -3,6 +3,7 @@ pub mod cute;
 pub mod faye;
 pub mod help;
 pub mod ping;
+pub mod role;
 pub mod spotify;
 pub mod user;
 pub mod webm;
