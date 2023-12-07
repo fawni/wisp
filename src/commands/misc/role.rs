@@ -1,6 +1,6 @@
 use crate::{serenity::Role, Context, Error};
 
-/// Role
+/// Role related commands
 #[poise::command(prefix_command, slash_command, track_edits, subcommands("info"))]
 pub async fn role(_: Context<'_>) -> Result<(), Error> {
     Ok(())

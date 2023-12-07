@@ -6,7 +6,7 @@ use chrono_tz::Tz;
 
 use crate::{commands::CommandError, Context, Error};
 
-/// User
+/// User related commands
 #[poise::command(
     prefix_command,
     slash_command,

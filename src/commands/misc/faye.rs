@@ -2,7 +2,7 @@ use faye::prelude::{Context as FayeContext, Parser};
 
 use crate::{commands::CommandError, Context, Error};
 
-/// Eval faye
+/// Eval a faye expression
 #[poise::command(prefix_command, slash_command)]
 pub async fn faye(
     ctx: Context<'_>,
