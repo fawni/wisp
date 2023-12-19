@@ -8,18 +8,18 @@ license = "ISC"
 
 [dependencies]
 poise = "0.5.7"
-tokio = { version = "1.34.0", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.35.0", features = ["macros", "rt-multi-thread"] }
 
-serde = { version = "1.0.192", features = ["derive"] }
+serde = { version = "1.0.193", features = ["derive"] }
 twink = { version = "1.1.2", features = ["12-hour"] }
 dotenvy = "0.15.7"
 thiserror = "1.0.50"
-once_cell = "1.18.0"
+once_cell = "1.19.0"
 
 reqwest = { version = "0.11.22", features = ["json"] }
 nanorand = "0.7.0"
 regex = "1.10.2"
-faye = "0.6.0"
+faye = { version = "0.6.0", default-features = false }
 
 chrono = "0.4.31"
 chrono-tz = "0.8.4"
