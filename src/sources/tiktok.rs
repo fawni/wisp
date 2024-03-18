@@ -11,7 +11,7 @@ pub struct Tiktok {
 
 impl Tiktok {
     pub async fn from(id: &str) -> Result<Self, Box<dyn std::error::Error>> {
-        let api_url = format!("https://api2.musical.ly/aweme/v1/feed/?aweme_id={id}");
+        let api_url = format!("https://api22-normal-c-useast2a.tiktokv.com/aweme/v1/feed/?aweme_id={id}");
         let res = reqwest::get(api_url).await?.json::<ApiResponse>().await?;
         let aweme = res.aweme_list[0].clone();
 
