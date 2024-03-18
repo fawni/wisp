@@ -18,3 +18,6 @@ deploy:
 push:
     git push
     git push gh
+
+update: && install
+    git pull

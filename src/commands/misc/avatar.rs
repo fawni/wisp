@@ -20,7 +20,7 @@ pub async fn avatar_ctx(ctx: Context<'_>, user: User) -> Result<(), Error> {
 async fn run_avatar(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
     let user = user.unwrap_or_else(|| ctx.author().clone());
     let member = match ctx.guild() {
-        Some(guild) => (guild.member(ctx, user.id).await).ok(),
+        Some(guild) => (guild.member(ctx.http(), user.id).await).ok(),
         None => None,
     };
     let mut description = format!(

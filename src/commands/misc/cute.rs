@@ -1,4 +1,4 @@
-use chrono::{DateTime, NaiveDateTime, Utc};
+use chrono::{DateTime, Utc};
 use nanorand::{Rng, WyRand};
 use poise::AutocompleteChoice;
 
@@ -56,12 +56,10 @@ pub async fn cute(
                     f.text(format!(
                         "{} | {}",
                         post.tim.unwrap(),
-                        DateTime::<Utc>::from_naive_utc_and_offset(
-                            NaiveDateTime::from_timestamp_opt(post.time, 0).unwrap(),
-                            Utc
-                        )
-                        .with_timezone(&chrono_tz::Tz::Africa__Cairo)
-                        .format("%I:%M:%S %p • %d %b %Y")
+                        DateTime::<Utc>::from_timestamp(post.time, 0)
+                            .unwrap()
+                            .with_timezone(&chrono_tz::Tz::Africa__Cairo)
+                            .format("%I:%M:%S %p • %d %b %Y")
                     ))
                 })
         })

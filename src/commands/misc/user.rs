@@ -35,7 +35,7 @@ pub async fn user_info_ctx(ctx: Context<'_>, user: User) -> Result<(), Error> {
 async fn run_user_info(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
     let user = user.unwrap_or_else(|| ctx.author().clone());
     let guild = ctx.guild().ok_or(CommandError::GuildOnly)?;
-    let member = guild.member(&ctx, user.id).await?;
+    let member = guild.member(ctx.http(), user.id).await?;
     let created_at = user
         .created_at()
         .with_timezone(&Tz::Africa__Cairo)
