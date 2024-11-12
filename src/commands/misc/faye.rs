@@ -1,4 +1,5 @@
 use faye::prelude::{Context as FayeContext, Parser};
+use poise::CreateReply;
 
 use crate::{commands::CommandError, Context, Error};
 
@@ -26,15 +27,13 @@ pub async fn faye(
         };
     }
 
-    ctx.send(|r| {
-        r.content(format!(
+    ctx.send(CreateReply::default().content(format!(
             "```clj\n{}\n```",
             res.iter()
                 .map(ToString::to_string)
                 .collect::<Vec<_>>()
                 .join("\n")
-        ))
-    })
+        )))
     .await?;
 
     Ok(())

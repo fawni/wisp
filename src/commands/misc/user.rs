@@ -3,6 +3,10 @@ use crate::{
     COLOR,
 };
 use chrono_tz::Tz;
+use poise::{
+    serenity_prelude::{CreateEmbed, CreateEmbedAuthor, CreateEmbedFooter},
+    CreateReply,
+};
 
 use crate::{commands::CommandError, Context, Error};
 
@@ -34,8 +38,8 @@ pub async fn user_info_ctx(ctx: Context<'_>, user: User) -> Result<(), Error> {
 
 async fn run_user_info(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
     let user = user.unwrap_or_else(|| ctx.author().clone());
-    let guild = ctx.guild().ok_or(CommandError::GuildOnly)?;
-    let member = guild.member(ctx.http(), user.id).await?;
+    let guild = ctx.partial_guild().await.ok_or(CommandError::GuildOnly)?;
+    let member = ctx.author_member().await.ok_or(CommandError::GuildOnly)?;
     let created_at = user
         .created_at()
         .with_timezone(&Tz::Africa__Cairo)
@@ -79,12 +83,13 @@ async fn run_user_info(ctx: Context<'_>, user: Option<User>) -> Result<(), Error
         },
     );
 
-    ctx.send(|r| {
-        r.embed(|e| {
-            e.author(|a| a.name(user.tag()).icon_url(user.face()))
+    ctx.send(
+        CreateReply::default().embed(
+            CreateEmbed::default()
+                .author(CreateEmbedAuthor::new(user.tag()).icon_url(user.face()))
                 .thumbnail(user.face())
                 .color(member.colour(ctx).unwrap_or(*COLOR))
-                .description(user.mention())
+                .description(user.mention().to_string())
                 .fields([
                     ("Joined", joined_at.to_string(), true),
                     ("Created", created_at.to_string(), true),
@@ -92,9 +97,9 @@ async fn run_user_info(ctx: Context<'_>, user: Option<User>) -> Result<(), Error
                     (&format!("Roles [{roles_count}]"), roles, true),
                     ("Permissions", perms, false),
                 ])
-                .footer(|f| f.text(format!("ID: {}", user.id)))
-        })
-    })
+                .footer(CreateEmbedFooter::new(format!("ID: {}", user.id))),
+        ),
+    )
     .await?;
 
     Ok(())

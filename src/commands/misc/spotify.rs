@@ -1,3 +1,6 @@
+use poise::serenity_prelude::{CreateEmbed, CreateEmbedAuthor};
+use poise::CreateReply;
+
 use crate::serenity::{ActivityType, User};
 use crate::{commands::CommandError, Context, Error};
 
@@ -17,12 +20,16 @@ pub async fn spotify_ctx(ctx: Context<'_>, user: User) -> Result<(), Error> {
 
 async fn run_spotify(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
     let user = user.unwrap_or_else(|| ctx.author().clone());
-    let guild = ctx.guild().ok_or(CommandError::GuildOnly)?;
-    let activities = &guild
-        .presences
-        .get(&user.id)
-        .ok_or(CommandError::PresenceNotFound)?
-        .activities;
+    let activities = {
+        let guild = ctx.guild().ok_or(CommandError::GuildOnly)?;
+        
+
+        guild
+            .presences
+            .get(&user.id)
+            .ok_or(CommandError::PresenceNotFound)?
+            .activities.clone()
+    };
     let spotify = activities
         .iter()
         .find(|a| a.kind == ActivityType::Listening && a.name == "Spotify")
@@ -41,9 +48,10 @@ async fn run_spotify(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> 
         .unwrap()
         .replace("spotify:", "https://i.scdn.co/image/");
 
-    ctx.send(|r| {
-        r.embed(|e| {
-            e.author(|a| a.name(user.tag()).icon_url(user.face()))
+    ctx.send(
+        CreateReply::default().embed(
+            CreateEmbed::default()
+                .author(CreateEmbedAuthor::new(user.tag()).icon_url(user.face()))
                 .title(format!("**{}**", spotify.details.clone().unwrap()))
                 .description(format!(
                     "by **{}**\n on **{}**",
@@ -63,9 +71,9 @@ async fn run_spotify(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> 
                         true,
                     ),
                 ])
-                .color(0xA3B_AA9)
-        })
-    })
+                .color(0xA3B_AA9),
+        ),
+    )
     .await?;
 
     Ok(())

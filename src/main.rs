@@ -3,8 +3,11 @@ use std::time::Duration;
 use commands::{misc, moderation, owner};
 use once_cell::sync::Lazy;
 use poise::{
-    serenity_prelude::{self as serenity, Activity, Color, GatewayIntents, OnlineStatus},
-    EditTracker, Event, Framework, FrameworkContext, FrameworkError, FrameworkOptions,
+    serenity_prelude::{
+        self as serenity, ActivityData, ClientBuilder, Color, CreateAllowedMentions,
+        CreateEmbed, FullEvent, GatewayIntents, OnlineStatus,
+    },
+    CreateReply, EditTracker, Framework, FrameworkContext, FrameworkError, FrameworkOptions,
     PrefixFrameworkOptions,
 };
 
@@ -24,8 +27,8 @@ pub static COLOR: Lazy<Color> = Lazy::new(|| {
 pub struct Data;
 
 async fn context_location(ctx: Context<'_>) -> String {
-    if let Some(guild) = ctx.guild() {
-        if let Some(channel) = ctx.channel_id().name(&ctx).await {
+    if let Some(guild) = ctx.partial_guild().await {
+        if let Ok(channel) = ctx.channel_id().name(&ctx.http()).await {
             format!("#{}, {} ({})", channel, guild.name, guild.id)
         } else {
             format!("{} ({})", guild.name, guild.id)
@@ -35,13 +38,13 @@ async fn context_location(ctx: Context<'_>) -> String {
     }
 }
 
-async fn event_listener(
+async fn event_handler(
     ctx: &serenity::Context,
-    event: &Event<'_>,
+    event: &FullEvent,
     _framework: FrameworkContext<'_, Data, Error>,
     _user_data: &Data,
 ) -> Result<(), Error> {
-    if let Event::Message { new_message: msg } = event {
+    if let FullEvent::Message { new_message: msg } = event {
         plugins::handle_message(ctx.clone(), msg.clone()).await?;
     }
 
@@ -58,17 +61,26 @@ async fn post_command(ctx: Context<'_>) {
     );
 }
 
-pub fn reply_callback(_ctx: Context<'_>, reply: &mut poise::CreateReply<'_>) {
-    reply.allowed_mentions(|f| f.replied_user(false));
-    reply.reply(true);
+pub fn reply_callback(_ctx: Context<'_>, reply: CreateReply) -> CreateReply {
+    reply
+        .clone()
+        .allowed_mentions(CreateAllowedMentions::default().replied_user(false))
+        .reply(true)
 }
 
 async fn on_error(err: FrameworkError<'_, Data, Error>) {
     match err {
-        FrameworkError::Command { error, ctx } => {
-            ctx.send(|r| r.embed(|e| e.description(error.to_string()).color(*COLOR)))
-                .await
-                .expect("failed to reply with error message");
+        FrameworkError::Command { error, ctx, .. } => {
+            // ctx.send(|r| r.embed(|e| e.description(error.to_string()).color(*COLOR)))
+            ctx.send(
+                CreateReply::default().embed(
+                    CreateEmbed::default()
+                        .description(error.to_string())
+                        .color(*COLOR),
+                ),
+            )
+            .await
+            .expect("failed to reply with error message");
             twink::hiss!(
                 "command <cyan>{}</> returned error <b><red>{:?}</> by <bold>{}</> (<italic>{}</>) in <purple>{}</>",
                 ctx.command().name,
@@ -81,7 +93,7 @@ async fn on_error(err: FrameworkError<'_, Data, Error>) {
         FrameworkError::EventHandler { error, event, .. } => {
             twink::hiss!(
                 "EventHandler returned error during <cyan>{:?}</> event: <red>{:?}</>",
-                event.name(),
+                event.snake_case_name(),
                 error
             );
         }
@@ -96,13 +108,11 @@ async fn on_error(err: FrameworkError<'_, Data, Error>) {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenvy::dotenv().ok();
+    let token = TOKEN.clone();
+    let intents = GatewayIntents::non_privileged()
+        | GatewayIntents::MESSAGE_CONTENT
+        | GatewayIntents::GUILD_PRESENCES;
     let framework = Framework::builder()
-        .token(TOKEN.clone())
-        .intents(
-            GatewayIntents::non_privileged()
-                | GatewayIntents::MESSAGE_CONTENT
-                | GatewayIntents::GUILD_PRESENCES,
-        )
         .options(FrameworkOptions {
             commands: vec![
                 misc::help::help(),
@@ -124,29 +134,34 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 owner::register::register(),
             ],
             on_error: |err| Box::pin(on_error(err)),
-            post_command: |ctx| Box::pin(post_command(ctx)),
+            post_command: |ctx| {
+                Box::pin(post_command(ctx))
+            },
             reply_callback: Some(reply_callback),
             prefix_options: PrefixFrameworkOptions {
                 prefix: Some(PREFIX.clone()),
-                edit_tracker: Some(EditTracker::for_timespan(Duration::from_secs(3600))),
+                edit_tracker: Some(EditTracker::for_timespan(Duration::from_secs(3600)).into()),
                 ..Default::default()
             },
             event_handler: |ctx, event, framework, user_data| {
-                Box::pin(event_listener(ctx, event, framework, user_data))
+                Box::pin(event_handler(ctx, event, framework, user_data))
             },
             ..Default::default()
         })
-        .setup(|ctx, ready, framework| {
+        .setup(move |ctx, ready, framework| {
             Box::pin(async move {
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
-                ctx.set_presence(Some(Activity::listening("동요")), OnlineStatus::Online)
-                    .await;
+                ctx.set_presence(Some(ActivityData::listening("♡")), OnlineStatus::Online);
                 twink::purr!("logged in as <bold><purple>@{}</>", ready.user.tag());
                 Ok(Data)
             })
-        });
+        })
+        .build();
+    let mut client = ClientBuilder::new(token, intents)
+        .framework(framework)
+        .await?;
 
-    framework.run().await?;
+    client.start().await?;
 
     Ok(())
 }

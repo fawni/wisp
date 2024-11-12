@@ -1,7 +1,11 @@
 use chrono::{DateTime, Utc};
 use nanorand::{Rng, WyRand};
+use poise::serenity_prelude::{
+    CreateActionRow, CreateAttachment, CreateButton, CreateEmbed, CreateEmbedAuthor,
+    CreateEmbedFooter,
+};
+use poise::CreateReply;
 
-use crate::serenity::{AttachmentType, ButtonStyle};
 use crate::sources::fourchan::{self, Post, Thread};
 use crate::{Context, Error, COLOR};
 
@@ -24,44 +28,38 @@ pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
 
     ctx.defer().await?;
     // ctx.send(|r| r.content(webm)).await?;
-    ctx.send(|r| {
-        r.embed(|r| {
-            r.color(*COLOR)
-                .title(format!("No. {}", post.no))
-                .description(format!("{}.webm", post.filename.unwrap()))
-                .author(|a| {
-                    a.name(format!("/{board}/"))
-                        .icon_url("https://i.imgur.com/XcCKhYj.png")
-                        .url(format!("https://boards.4channel.org/{board}/"))
-                })
-                .footer(|f| {
-                    f.text(format!(
+    ctx.send(
+        CreateReply::default()
+            .embed(
+                CreateEmbed::default()
+                    .color(*COLOR)
+                    .title(format!("No. {}", post.no))
+                    .description(format!("{}.webm", post.filename.unwrap()))
+                    .author(
+                        CreateEmbedAuthor::new(format!("/{board}/"))
+                            .icon_url("https://i.imgur.com/XcCKhYj.png")
+                            .url(format!("https://boards.4channel.org/{board}/")),
+                    )
+                    .footer(CreateEmbedFooter::new(format!(
                         "{} | {}",
                         post.tim.unwrap(),
                         DateTime::<Utc>::from_timestamp(post.time, 0)
                             .unwrap()
                             .with_timezone(&chrono_tz::Tz::Africa__Cairo)
                             .format("%I:%M:%S %p • %d %b %Y")
-                    ))
-                })
-        })
-        .components(|c| {
-            c.create_action_row(|r| {
-                r.create_button(|b| {
-                    b.label("view post").style(ButtonStyle::Link).url(format!(
-                        "https://boards.4channel.org/{board}/thread/{thread_no}#p{}",
-                        post.no
-                    ))
-                })
-                .create_button(|b| {
-                    b.label("view thread").style(ButtonStyle::Link).url(format!(
-                        "https://boards.4channel.org/{board}/thread/{thread_no}"
-                    ))
-                })
-            })
-        })
-        .attachment(AttachmentType::from(webm.as_str()))
-    })
+                    ))),
+            )
+            .components(vec![CreateActionRow::Buttons(vec![
+                CreateButton::new_link(format!(
+                    "https://boards.4channel.org/{board}/thread/{thread_no}#p{}",
+                    post.no
+                )).label("view post"),
+                CreateButton::new_link(format!(
+                    "https://boards.4channel.org/{board}/thread/{thread_no}"
+                )).label("view thread"),
+            ])])
+            .attachment(CreateAttachment::url(ctx.http(), webm.as_str()).await?),
+    )
     .await?;
 
     Ok(())

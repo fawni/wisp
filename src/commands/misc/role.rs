@@ -1,3 +1,8 @@
+use poise::{
+    serenity_prelude::{CreateEmbed, CreateEmbedFooter},
+    CreateReply,
+};
+
 use crate::{serenity::Role, Context, Error};
 
 /// Role related commands
@@ -9,9 +14,10 @@ pub async fn role(_: Context<'_>) -> Result<(), Error> {
 /// Info about a role
 #[poise::command(prefix_command, slash_command, track_edits)]
 pub async fn info(ctx: Context<'_>, role: Role) -> Result<(), Error> {
-    ctx.send(|m| {
-        m.embed(|e| {
-            e.description(format!("<@&{}>", role.id))
+    ctx.send(
+        CreateReply::default().embed(
+            CreateEmbed::default()
+                .description(format!("<@&{}>", role.id))
                 .color(role.colour)
                 .fields([
                     ("Name", role.name, true),
@@ -27,13 +33,10 @@ pub async fn info(ctx: Context<'_>, role: Role) -> Result<(), Error> {
                     "https://dummyimage.com/200x200/{}/{0}.png",
                     role.colour.hex()
                 ))
-                .footer(|f| {
-                    f.text(format!("ID: {}", role.id))
-                        .icon_url(role.icon.unwrap_or_default())
-                })
-                .timestamp(role.id.created_at())
-        })
-    })
+                .footer(CreateEmbedFooter::new(format!("ID: {}", role.id)))
+                .timestamp(role.id.created_at()),
+        ),
+    )
     .await?;
     Ok(())
 }

@@ -1,3 +1,6 @@
+use poise::serenity_prelude::{CreateEmbed, CreateEmbedAuthor};
+use poise::CreateReply;
+
 use crate::serenity::User;
 use crate::{Context, Error, COLOR};
 
@@ -19,12 +22,9 @@ pub async fn avatar_ctx(ctx: Context<'_>, user: User) -> Result<(), Error> {
 
 async fn run_avatar(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
     let user = user.unwrap_or_else(|| ctx.author().clone());
-    let member = match ctx.guild() {
-        Some(guild) => (guild.member(ctx.http(), user.id).await).ok(),
-        None => None,
-    };
+    let member = ctx.author_member().await;
     let mut description = format!(
-        "[default]({}), [user]({})",
+        "[default]({}), [normal]({})",
         user.default_avatar_url(),
         user.face()
     );
@@ -34,7 +34,7 @@ async fn run_avatar(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
         |member| {
             description = match member.avatar_url() {
                 Some(server_avatar) => format!(
-                    "[default]({}), [server]({}), [user]({})",
+                    "[default]({}), [server]({}), [normal]({})",
                     member.user.default_avatar_url(),
                     server_avatar,
                     member.user.face()
@@ -49,14 +49,15 @@ async fn run_avatar(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
         },
     );
 
-    ctx.send(|r| {
-        r.embed(|r| {
-            r.author(|a| a.name(user.tag()).icon_url(&avatar))
+    ctx.send(
+        CreateReply::default().embed(
+            CreateEmbed::default()
+                .author(CreateEmbedAuthor::new(user.tag()).icon_url(&avatar))
                 .description(description)
                 .image(avatar)
-                .color(color)
-        })
-    })
+                .color(color),
+        ),
+    )
     .await?;
 
     Ok(())

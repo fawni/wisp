@@ -1,3 +1,5 @@
+use poise::serenity_prelude::{EditMessage, GetMessages};
+
 use crate::serenity::{Message, User};
 use crate::{Context, Error};
 
@@ -19,12 +21,15 @@ pub async fn clear(
     let channel = ctx.channel_id();
 
     let mut messages = channel
-        .messages(&ctx, |m| m.limit(amount.into()).before(reply.id))
+        .messages(
+            &ctx,
+            GetMessages::default().limit(amount as u8).before(reply.id),
+        )
         .await?;
 
     if let Some(user) = user {
         messages = channel
-            .messages(&ctx, |m| m.before(reply.id))
+            .messages(&ctx, GetMessages::default().before(reply.id))
             .await?
             .into_iter()
             .filter(|m| m.author.id == user.id)
@@ -34,9 +39,10 @@ pub async fn clear(
 
     channel.delete_messages(&ctx, &messages).await?;
     reply
-        .edit(ctx, |r| {
-            r.content(format!("done! cleared `{}` messages.", messages.len()))
-        })
+        .edit(
+            ctx,
+            EditMessage::default().content(format!("done! cleared `{}` messages.", messages.len())),
+        )
         .await?;
 
     Ok(())
