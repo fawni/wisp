@@ -10,7 +10,7 @@ use poise::serenity_prelude::{
 use poise::CreateReply;
 
 /// Get an xkcd comic
-#[poise::command(prefix_command, track_edits, slash_command)]
+#[poise::command(prefix_command, track_edits, slash_command, category = "Miscellaneous")]
 pub async fn xkcd(
     ctx: Context<'_>,
     #[description = "specific comic to retrieve"] id: Option<u32>,

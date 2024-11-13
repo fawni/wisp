@@ -4,7 +4,7 @@ use poise::CreateReply;
 use crate::{commands::CommandError, Context, Error};
 
 /// Eval a faye expression
-#[poise::command(prefix_command, slash_command, track_edits)]
+#[poise::command(prefix_command, slash_command, track_edits, category = "Miscellaneous")]
 pub async fn faye(
     ctx: Context<'_>,
     #[description = "Expression to eval"] expression: String,

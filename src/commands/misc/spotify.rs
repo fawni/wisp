@@ -5,7 +5,7 @@ use crate::serenity::{ActivityType, User};
 use crate::{commands::CommandError, Context, Error};
 
 /// Display info about a user's currently playing Spotify song
-#[poise::command(prefix_command, track_edits, slash_command, guild_only)]
+#[poise::command(prefix_command, track_edits, slash_command, guild_only, category = "Miscellaneous")]
 pub async fn spotify(
     ctx: Context<'_>,
     #[description = "user whose Spotify status will be checked"] user: Option<User>,

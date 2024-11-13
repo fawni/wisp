@@ -3,7 +3,7 @@ use crate::serenity::Message;
 use crate::{Context, Error};
 
 /// Repeat a message
-#[poise::command(slash_command, owners_only, ephemeral)]
+#[poise::command(slash_command, owners_only, ephemeral, category = "Owner")]
 pub async fn echo(
     ctx: Context<'_>,
     #[description = "message id to reply to"] msg: Option<Message>,

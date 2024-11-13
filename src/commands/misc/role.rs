@@ -6,7 +6,13 @@ use poise::{
 use crate::{serenity::Role, Context, Error};
 
 /// Role related commands
-#[poise::command(prefix_command, slash_command, track_edits, subcommands("info"))]
+#[poise::command(
+    prefix_command,
+    slash_command,
+    track_edits,
+    subcommands("info"),
+    category = "Miscellaneous"
+)]
 pub async fn role(_: Context<'_>) -> Result<(), Error> {
     Ok(())
 }
@@ -24,7 +30,7 @@ pub async fn info(ctx: Context<'_>, role: Role) -> Result<(), Error> {
                     ("Color", format!("#{}", role.colour.hex()), true),
                     ("Mention", format!("`<@&{}>`", role.id), true),
                     ("Hoisted", role.hoist.to_string(), true),
-                    ("Postion", role.position.to_string(), true),
+                    ("Position", role.position.to_string(), true),
                     ("Mentionable", role.mentionable.to_string(), true),
                     ("Managed", role.managed.to_string(), true),
                     ("Permissions", role.permissions.to_string(), false),

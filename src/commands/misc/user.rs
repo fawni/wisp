@@ -16,7 +16,8 @@ use crate::{commands::CommandError, Context, Error};
     slash_command,
     track_edits,
     subcommands("info"),
-    aliases("userinfo", "whois")
+    aliases("userinfo", "whois"),
+    category = "Miscellaneous"
 )]
 pub async fn user(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
     run_user_info(ctx, user).await

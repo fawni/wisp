@@ -7,7 +7,8 @@ use crate::{Context, Error};
 #[poise::command(
     prefix_command,
     slash_command,
-    required_permissions = "MANAGE_MESSAGES"
+    required_permissions = "MANAGE_MESSAGES",
+    category = "Moderation"
 )]
 pub async fn clear(
     ctx: Context<'_>,
