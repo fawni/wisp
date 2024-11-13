@@ -53,10 +53,12 @@ pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
                 CreateButton::new_link(format!(
                     "https://boards.4channel.org/{board}/thread/{thread_no}#p{}",
                     post.no
-                )).label("view post"),
+                ))
+                .label("view post"),
                 CreateButton::new_link(format!(
                     "https://boards.4channel.org/{board}/thread/{thread_no}"
-                )).label("view thread"),
+                ))
+                .label("view thread"),
             ])])
             .attachment(CreateAttachment::url(ctx.http(), webm.as_str()).await?),
     )

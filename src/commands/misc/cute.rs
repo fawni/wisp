@@ -19,7 +19,13 @@ async fn cute_boards<'a>(
 }
 
 /// Get a /cute/ picture
-#[poise::command(prefix_command, track_edits, slash_command, aliases("c", "cm"), category = "Miscellaneous")]
+#[poise::command(
+    prefix_command,
+    track_edits,
+    slash_command,
+    aliases("c", "cm"),
+    category = "Miscellaneous"
+)]
 pub async fn cute(
     ctx: Context<'_>,
     #[autocomplete = "cute_boards"]

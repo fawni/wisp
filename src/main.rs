@@ -4,8 +4,8 @@ use commands::{misc, moderation, owner};
 use once_cell::sync::Lazy;
 use poise::{
     serenity_prelude::{
-        self as serenity, ActivityData, ClientBuilder, Color, CreateAllowedMentions,
-        CreateEmbed, FullEvent, GatewayIntents, OnlineStatus,
+        self as serenity, ActivityData, ClientBuilder, Color, CreateAllowedMentions, CreateEmbed,
+        FullEvent, GatewayIntents, OnlineStatus,
     },
     CreateReply, EditTracker, Framework, FrameworkContext, FrameworkError, FrameworkOptions,
     PrefixFrameworkOptions,
@@ -133,9 +133,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 owner::register::register(),
             ],
             on_error: |err| Box::pin(on_error(err)),
-            post_command: |ctx| {
-                Box::pin(post_command(ctx))
-            },
+            post_command: |ctx| Box::pin(post_command(ctx)),
             reply_callback: Some(reply_callback),
             prefix_options: PrefixFrameworkOptions {
                 prefix: Some(PREFIX.clone()),

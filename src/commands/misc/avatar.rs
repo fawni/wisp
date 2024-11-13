@@ -5,7 +5,13 @@ use crate::serenity::User;
 use crate::{Context, Error, COLOR};
 
 /// Display a user's avatar
-#[poise::command(prefix_command, track_edits, slash_command, aliases("av", "pfp"), category = "Miscellaneous")]
+#[poise::command(
+    prefix_command,
+    track_edits,
+    slash_command,
+    aliases("av", "pfp"),
+    category = "Miscellaneous"
+)]
 pub async fn avatar(
     ctx: Context<'_>,
     #[description = "user whose avatar will be displayed"] user: Option<User>,
