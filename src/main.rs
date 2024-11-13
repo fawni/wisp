@@ -63,7 +63,6 @@ async fn post_command(ctx: Context<'_>) {
 
 pub fn reply_callback(_ctx: Context<'_>, reply: CreateReply) -> CreateReply {
     reply
-        .clone()
         .allowed_mentions(CreateAllowedMentions::default().replied_user(false))
         .reply(true)
 }
