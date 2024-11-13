@@ -1,8 +1,7 @@
-version: "3.9"
 services:
   bot:
     image: fawni/wisp # or ghcr.io/fawni/wisp or codeberg.org/fawn/wisp
-    # build: . # uncomment to build the image locally instead of pulling from a registery
+    # build: . # uncomment to build the image locally instead of pulling from a registry
     restart: unless-stopped
     environment:
       WISP_PREFIX: "~"
