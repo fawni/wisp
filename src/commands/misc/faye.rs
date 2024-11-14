@@ -35,7 +35,8 @@ pub async fn faye(
     }
 
     ctx.send(CreateReply::default().content(format!(
-            "```clj\n{}\n```",
+            "input:\n```clj\n{}\n```\noutput:\n```clj\n{}\n```",
+            expression,
             res.iter()
                 .map(ToString::to_string)
                 .collect::<Vec<_>>()
