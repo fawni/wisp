@@ -29,7 +29,7 @@ pub async fn user(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
     track_edits,
     slash_command,
     guild_only,
-    install_context = "User",
+    install_context = "Guild|User",
     interaction_context = "Guild"
 )]
 pub async fn info(

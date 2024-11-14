@@ -15,7 +15,7 @@ use crate::{Context, Error, COLOR};
     track_edits,
     slash_command,
     category = "Miscellaneous",
-    install_context = "User",
+    install_context = "Guild|User",
     interaction_context = "Guild|BotDm|PrivateChannel"
 )]
 pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {

@@ -25,7 +25,7 @@ async fn cute_boards<'a>(
     slash_command,
     aliases("c", "cm"),
     category = "Miscellaneous",
-    install_context = "User",
+    install_context = "Guild|User",
     interaction_context = "Guild|BotDm|PrivateChannel"
 )]
 pub async fn cute(

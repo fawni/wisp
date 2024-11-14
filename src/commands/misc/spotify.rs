@@ -11,7 +11,7 @@ use crate::{commands::CommandError, Context, Error};
     slash_command,
     guild_only,
     category = "Miscellaneous",
-    install_context = "User",
+    install_context = "Guild|User",
     interaction_context = "Guild"
 )]
 pub async fn spotify(
@@ -24,7 +24,7 @@ pub async fn spotify(
 #[poise::command(
     context_menu_command = "Spotify",
     guild_only,
-    install_context = "User",
+    install_context = "Guild|User",
     interaction_context = "Guild"
 )]
 pub async fn spotify_ctx(ctx: Context<'_>, user: User) -> Result<(), Error> {

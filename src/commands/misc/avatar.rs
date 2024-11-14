@@ -11,7 +11,7 @@ use crate::{Context, Error, COLOR};
     slash_command,
     aliases("av", "pfp"),
     category = "Miscellaneous",
-    install_context = "User",
+    install_context = "Guild|User",
     interaction_context = "Guild|BotDm|PrivateChannel"
 )]
 pub async fn avatar(
@@ -24,7 +24,7 @@ pub async fn avatar(
 
 #[poise::command(
     context_menu_command = "Avatar",
-    install_context = "User",
+    install_context = "Guild|User",
     interaction_context = "Guild|BotDm|PrivateChannel"
 )]
 pub async fn avatar_ctx(ctx: Context<'_>, user: User) -> Result<(), Error> {

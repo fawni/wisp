@@ -23,7 +23,7 @@ pub async fn role(_: Context<'_>) -> Result<(), Error> {
     slash_command,
     guild_only,
     track_edits,
-    install_context = "User",
+    install_context = "Guild|User",
     interaction_context = "Guild"
 )]
 pub async fn info(ctx: Context<'_>, role: Role) -> Result<(), Error> {

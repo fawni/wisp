@@ -9,7 +9,7 @@ use crate::{commands::CommandError, Context, Error};
     slash_command,
     track_edits,
     category = "Miscellaneous",
-    install_context = "User",
+    install_context = "Guild|User",
     interaction_context = "Guild|BotDm|PrivateChannel"
 )]
 pub async fn faye(
