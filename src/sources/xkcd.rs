@@ -22,11 +22,16 @@ impl Comic {
     pub async fn from(id: u32) -> Result<Self, reqwest::Error> {
         reqwest::get(&format!("{BASE_URL}/{id}/info.0.json"))
             .await?
+            .error_for_status()?
             .json::<Self>()
             .await
     }
 
     pub async fn latest() -> Result<Self, reqwest::Error> {
-        reqwest::get(LATEST_URL).await?.json::<Self>().await
+        reqwest::get(LATEST_URL)
+            .await?
+            .error_for_status()?
+            .json::<Self>()
+            .await
     }
 }

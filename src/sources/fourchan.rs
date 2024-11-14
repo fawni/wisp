@@ -1,8 +1,15 @@
 use serde::Deserialize;
 
 pub async fn get_catalog(board: &str) -> Result<Catalog, reqwest::Error> {
-    reqwest::get(&format!("https://a.4cdn.org/{board}/catalog.json"))
+    reqwest::Client::new()
+        .get(format!("https://a.4cdn.org/{board}/catalog.json"))
+        .header(
+            "User-Agent",
+            "Mozilla/5.0 (X11; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0",
+        )
+        .send()
         .await?
+        .error_for_status()?
         .json::<Catalog>()
         .await
 }
@@ -26,12 +33,19 @@ pub struct Thread {
 
 impl Thread {
     pub async fn from(board: &str, thread_no: u32) -> Result<Self, reqwest::Error> {
-        reqwest::get(format!(
-            "https://a.4cdn.org/{board}/thread/{thread_no}.json"
-        ))
-        .await?
-        .json::<Self>()
-        .await
+        reqwest::Client::new()
+            .get(format!(
+                "https://a.4cdn.org/{board}/thread/{thread_no}.json"
+            ))
+            .header(
+                "User-Agent",
+                "Mozilla/5.0 (X11; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0",
+            )
+            .send()
+            .await?
+            .error_for_status()?
+            .json::<Self>()
+            .await
     }
 }
 
