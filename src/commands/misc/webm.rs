@@ -10,7 +10,14 @@ use crate::sources::fourchan::{self, Post, Thread};
 use crate::{Context, Error, COLOR};
 
 /// Get a webm from /wsg/
-#[poise::command(prefix_command, track_edits, slash_command, category = "Miscellaneous")]
+#[poise::command(
+    prefix_command,
+    track_edits,
+    slash_command,
+    category = "Miscellaneous",
+    install_context = "User",
+    interaction_context = "Guild|BotDm|PrivateChannel"
+)]
 pub async fn webm(ctx: Context<'_>) -> Result<(), Error> {
     let mut rng = WyRand::new();
 

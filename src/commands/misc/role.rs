@@ -18,7 +18,14 @@ pub async fn role(_: Context<'_>) -> Result<(), Error> {
 }
 
 /// Info about a role
-#[poise::command(prefix_command, slash_command, track_edits)]
+#[poise::command(
+    prefix_command,
+    slash_command,
+    guild_only,
+    track_edits,
+    install_context = "User",
+    interaction_context = "Guild"
+)]
 pub async fn info(ctx: Context<'_>, role: Role) -> Result<(), Error> {
     ctx.send(
         CreateReply::default().embed(

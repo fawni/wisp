@@ -3,7 +3,14 @@ use poise::CreateReply;
 use crate::{Context, Error};
 
 /// Ping the bot
-#[poise::command(prefix_command, track_edits, slash_command, category = "Miscellaneous")]
+#[poise::command(
+    prefix_command,
+    track_edits,
+    slash_command,
+    category = "Miscellaneous",
+    install_context = "User",
+    interaction_context = "Guild|BotDm|PrivateChannel"
+)]
 pub async fn ping(ctx: Context<'_>) -> Result<(), Error> {
     let start = std::time::Instant::now();
     let msg = ctx.send(CreateReply::default().content("(๑˃ᴗ˂)ﻭ")).await?;

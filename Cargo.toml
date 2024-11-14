@@ -27,3 +27,7 @@ chrono-tz = "0.10.0"
 [profile.release]
 lto = true
 codegen-units = 1
+
+[patch.crates-io]
+poise = { git = "https://github.com/serenity-rs/poise", branch = "current" }
+serenity = { git = "https://github.com/serenity-rs/serenity", branch = "current" }

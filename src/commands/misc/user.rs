@@ -24,7 +24,14 @@ pub async fn user(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
 }
 
 /// Query information about a Discord user
-#[poise::command(prefix_command, track_edits, slash_command, guild_only)]
+#[poise::command(
+    prefix_command,
+    track_edits,
+    slash_command,
+    guild_only,
+    install_context = "User",
+    interaction_context = "Guild"
+)]
 pub async fn info(
     ctx: Context<'_>,
     #[description = "User to query information about"] user: Option<User>,

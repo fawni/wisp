@@ -10,7 +10,9 @@ use crate::{commands::CommandError, Context, Error};
     track_edits,
     slash_command,
     guild_only,
-    category = "Miscellaneous"
+    category = "Miscellaneous",
+    install_context = "User",
+    interaction_context = "Guild"
 )]
 pub async fn spotify(
     ctx: Context<'_>,
@@ -19,7 +21,12 @@ pub async fn spotify(
     run_spotify(ctx, user).await
 }
 
-#[poise::command(context_menu_command = "Spotify", guild_only)]
+#[poise::command(
+    context_menu_command = "Spotify",
+    guild_only,
+    install_context = "User",
+    interaction_context = "Guild"
+)]
 pub async fn spotify_ctx(ctx: Context<'_>, user: User) -> Result<(), Error> {
     run_spotify(ctx, Some(user)).await
 }

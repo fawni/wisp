@@ -10,7 +10,9 @@ use crate::{Context, Error, COLOR};
     track_edits,
     slash_command,
     aliases("av", "pfp"),
-    category = "Miscellaneous"
+    category = "Miscellaneous",
+    install_context = "User",
+    interaction_context = "Guild|BotDm|PrivateChannel"
 )]
 pub async fn avatar(
     ctx: Context<'_>,
@@ -20,7 +22,11 @@ pub async fn avatar(
     Ok(())
 }
 
-#[poise::command(context_menu_command = "Avatar")]
+#[poise::command(
+    context_menu_command = "Avatar",
+    install_context = "User",
+    interaction_context = "Guild|BotDm|PrivateChannel"
+)]
 pub async fn avatar_ctx(ctx: Context<'_>, user: User) -> Result<(), Error> {
     run_avatar(ctx, Some(user)).await?;
     Ok(())
