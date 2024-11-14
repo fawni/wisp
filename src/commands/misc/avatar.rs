@@ -1,4 +1,4 @@
-use poise::serenity_prelude::{CreateEmbed, CreateEmbedAuthor};
+use poise::serenity_prelude::{CreateEmbed, CreateEmbedAuthor, Member};
 use poise::CreateReply;
 
 use crate::serenity::User;
@@ -34,7 +34,7 @@ pub async fn avatar_ctx(ctx: Context<'_>, user: User) -> Result<(), Error> {
 
 async fn run_avatar(ctx: Context<'_>, user: Option<User>) -> Result<(), Error> {
     let user = user.unwrap_or_else(|| ctx.author().clone());
-    let member = ctx.author_member().await;
+    let member = user.member.clone().map(|m| Member::from(*m));
     let mut description = format!(
         "[default]({}), [normal]({})",
         user.default_avatar_url(),
