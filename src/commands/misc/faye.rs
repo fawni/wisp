@@ -3,7 +3,7 @@ use poise::CreateReply;
 
 use crate::{commands::CommandError, Context, Error};
 
-/// Eval a faye expression
+/// Evaluate a faye expression
 #[poise::command(
     prefix_command,
     slash_command,

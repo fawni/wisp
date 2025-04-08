@@ -9,7 +9,7 @@ use poise::CreateReply;
 use crate::sources::fourchan::{self, Post, Thread};
 use crate::{Context, Error, COLOR};
 
-/// Get a webm from /wsg/
+/// Get a random webm from /wsg/
 #[poise::command(
     prefix_command,
     track_edits,

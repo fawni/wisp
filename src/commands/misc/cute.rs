@@ -18,7 +18,7 @@ async fn cute_boards<'a>(
         .map(|name| AutocompleteChoice::new(format!("/{name}/"), name))
 }
 
-/// Get a /cute/ picture
+/// Get a random /cute/ picture
 #[poise::command(
     prefix_command,
     track_edits,
