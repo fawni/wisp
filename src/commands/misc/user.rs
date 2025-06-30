@@ -58,6 +58,7 @@ async fn run_user_info(ctx: Context<'_>, user: Option<User>) -> Result<(), Error
         .with_timezone(&Tz::Africa__Cairo)
         .format("%d %b %Y, %I:%M:%S %p");
 
+    #[allow(deprecated)]
     let perms = member.permissions(ctx).map_or_else(
         |_| "None".to_owned(),
         |perms| {

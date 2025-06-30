@@ -23,6 +23,7 @@ pub static PREFIX: Lazy<String> = Lazy::new(|| std::env::var("WISP_PREFIX").unwr
 pub static COLOR: Lazy<Color> = Lazy::new(|| {
     Color::new(u32::from_str_radix(&std::env::var("WISP_COLOR").unwrap(), 16).unwrap())
 });
+pub static WOLFRAM: Lazy<String> = Lazy::new(|| std::env::var("WOLFRAM_APP_ID").unwrap());
 
 pub struct Data;
 
@@ -122,6 +123,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 misc::spotify::spotify_ctx(),
                 misc::cute::cute(),
                 misc::faye::faye(),
+                misc::wolfram::wolfram(),
                 misc::user::user(),
                 misc::user::user_info_ctx(),
                 misc::role::role(),

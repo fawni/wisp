@@ -7,4 +7,5 @@ services:
       WISP_PREFIX: "~"
       WISP_TOKEN: ""
       WISP_COLOR: "8AB484" # a hex string without the '#'
+      WOLFRAM_APP_ID: "" # wolfram app id from https://developer.wolframalpha.com/access
       

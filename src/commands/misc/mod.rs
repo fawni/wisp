@@ -7,4 +7,5 @@ pub mod role;
 pub mod spotify;
 pub mod user;
 pub mod webm;
+pub mod wolfram;
 pub mod xkcd;
