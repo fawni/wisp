@@ -22,7 +22,7 @@ pub async fn wisp(
     let answer = ctx
         .data()
         .gemini_client
-        .generate_response_with_context(&prompt, ctx.author().display_name(), &vec![], None)
+        .generate_response_with_context(&prompt, ctx.author().display_name(), &[], None)
         .await?;
 
     ctx.reply(answer).await?;

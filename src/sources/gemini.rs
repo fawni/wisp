@@ -41,6 +41,7 @@ impl GeminiClient {
     }
 
     // Generate a simple response without context
+    #[allow(dead_code)]
     pub async fn generate_response(&self, prompt: &str) -> Result<String, Error> {
         // Create the request body
         let request_body = serde_json::json!({
@@ -95,7 +96,7 @@ impl GeminiClient {
         &self,
         prompt: &str,
         user_name: &str,
-        context_messages: &Vec<(String, String, String)>,
+        context_messages: &[(String, String, String)],
         _user_pronouns: Option<&str>,
     ) -> Result<String, Error> {
         // Check if the prompt already contains context (like in interjection prompts)
@@ -105,7 +106,7 @@ impl GeminiClient {
         let context = if !context_messages.is_empty() {
             // Get the messages in chronological order (oldest first)
             // The database query returns newest first, so we need to reverse
-            let mut chronological_messages = context_messages.clone();
+            let mut chronological_messages = context_messages.to_owned();
             chronological_messages.reverse();
 
             // Format each message as "DisplayName: Message" using the display_name field
@@ -190,7 +191,7 @@ impl GeminiClient {
                     .get("message")
                     .and_then(|m| m.as_str())
                     .unwrap_or("Unknown API error");
-                let error_code = error.get("code").and_then(|c| c.as_u64()).unwrap_or(0);
+                let _error_code = error.get("code").and_then(|c| c.as_u64()).unwrap_or(0);
 
                 // Check if this is an overload error that we should retry
                 if error_message.contains("overloaded") || error_message.contains("try again later")
