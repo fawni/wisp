@@ -7,7 +7,8 @@ use crate::{Context, Error};
 pub async fn echo(
     ctx: Context<'_>,
     #[description = "message id to reply to"] msg: Option<Message>,
-    #[description = "text to echo"] text: String,
+    #[description = "text to echo"]
+    text: String,
 ) -> Result<(), Error> {
     let channel = ctx.channel_id();
     if let Some(msg) = msg {

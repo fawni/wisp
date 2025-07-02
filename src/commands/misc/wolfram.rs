@@ -1,4 +1,4 @@
-use crate::{Context, Error, WOLFRAM};
+use crate::{sources::wolfram::Wolfram, Context, Error};
 use poise::CreateReply;
 
 /// Query the WolframAlpha api
@@ -12,16 +12,14 @@ use poise::CreateReply;
 )]
 pub async fn wolfram(
     ctx: Context<'_>,
-    #[description = "Query for WolframAlpha"] query: String,
+    #[rest]
+    #[description = "Query for WolframAlpha"]
+    query: String,
 ) -> Result<(), Error> {
-    let res = reqwest::get(format!(
-        "http://api.wolframalpha.com/v1/result?appid={}&i={}",
-        *WOLFRAM,
-        urlencoding::encode(&query)
-    ))
-    .await?;
+    ctx.defer().await?;
+    let answer = Wolfram::ask(query).await?;
 
-    ctx.send(CreateReply::default().content(format!("```{}```", res.text().await?)))
+    ctx.send(CreateReply::default().content(format!("```{answer}```")))
         .await?;
 
     Ok(())

@@ -2904,6 +2904,7 @@ dependencies = [
 name = "wisp"
 version = "0.3.0"
 dependencies = [
+ "base64 0.22.1",
  "chrono",
  "chrono-tz",
  "dotenvy",
@@ -2914,6 +2915,7 @@ dependencies = [
  "regex",
  "reqwest 0.12.20",
  "serde",
+ "serde_json",
  "thiserror 2.0.12",
  "tokio",
  "twink",

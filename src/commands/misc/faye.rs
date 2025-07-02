@@ -14,7 +14,9 @@ use crate::{commands::CommandError, Context, Error};
 )]
 pub async fn faye(
     ctx: Context<'_>,
-    #[description = "Expression to eval"] expression: String,
+    #[rest]
+    #[description = "Expression to eval"]
+    expression: String,
 ) -> Result<(), Error> {
     let mut faye_ctx = FayeContext::default();
 
