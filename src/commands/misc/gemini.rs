@@ -7,6 +7,7 @@ use crate::{sources::gemini::GeminiClient, Context, Error, GEMINI_KEY, GEMINI_PR
     prefix_command,
     slash_command,
     track_edits,
+    broadcast_typing,
     category = "Miscellaneous",
     install_context = "Guild|User",
     interaction_context = "Guild|BotDm|PrivateChannel"

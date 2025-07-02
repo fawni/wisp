@@ -6,6 +6,7 @@ use poise::CreateReply;
     prefix_command,
     slash_command,
     track_edits,
+    broadcast_typing,
     category = "Miscellaneous",
     install_context = "Guild|User",
     interaction_context = "Guild|BotDm|PrivateChannel"
