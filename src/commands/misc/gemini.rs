@@ -1,6 +1,6 @@
 use poise::{serenity_prelude::CreateAttachment, CreateReply};
 
-use crate::{sources::gemini::GeminiClient, Context, Error, GEMINI_KEY, GEMINI_PROMPT};
+use crate::{Context, Error};
 
 /// Ask or chat with an LLM
 #[poise::command(
@@ -18,16 +18,10 @@ pub async fn wisp(
     #[description = "Question to ask"]
     prompt: String,
 ) -> Result<(), Error> {
-    let client = GeminiClient::new(
-        GEMINI_KEY.clone(),
-        None,
-        Some(GEMINI_PROMPT.clone()),
-        "wisp".to_owned(),
-    );
-
     ctx.defer().await?;
-    // let answer = client.generate_content(&prompt).await?;
-    let answer = client
+    let answer = ctx
+        .data()
+        .gemini_client
         .generate_response_with_context(&prompt, ctx.author().display_name(), &vec![], None)
         .await?;
 
@@ -51,15 +45,8 @@ pub async fn generate(
     #[description = "Prompt to generate"]
     prompt: String,
 ) -> Result<(), Error> {
-    let client = GeminiClient::new(
-        GEMINI_KEY.clone(),
-        None,
-        Some(GEMINI_PROMPT.clone()),
-        "wisp".to_owned(),
-    );
-
     ctx.defer().await?;
-    let (data, description) = client.generate_image(&prompt).await?;
+    let (data, description) = ctx.data().gemini_client.generate_image(&prompt).await?;
 
     let temp_dir = std::env::temp_dir();
     let file_path = temp_dir.join(format!(
@@ -67,20 +54,16 @@ pub async fn generate(
         chrono::Utc::now().timestamp()
     ));
 
-    // Write the image data to the file
     std::fs::write(&file_path, &data)?;
 
-    // Create the attachment
     let files = vec![CreateAttachment::path(&file_path).await?];
 
-    // Format the message with both the prompt and the AI's description
     let message_content = if description.is_empty() {
         format!("Here's what I imagine for: {}", prompt)
     } else {
         format!("Here's what I imagine for: {}\n\n{}", prompt, description)
     };
 
-    // Send the image file with the description
     let builder = files
         .into_iter()
         .fold(CreateReply::default().content(message_content), |b, f| {
@@ -89,9 +72,6 @@ pub async fn generate(
 
     ctx.reply_builder(builder);
 
-    // Send the message
-
-    // Clean up the temporary file
     std::fs::remove_file(file_path)?;
 
     Ok(())

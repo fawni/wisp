@@ -10,6 +10,7 @@ use poise::{
     CreateReply, EditTracker, Framework, FrameworkContext, FrameworkError, FrameworkOptions,
     PrefixFrameworkOptions,
 };
+use sources::gemini::GeminiClient;
 
 mod commands;
 mod plugins;
@@ -30,7 +31,9 @@ pub static GEMINI_MODEL: Lazy<String> = Lazy::new(|| std::env::var("GEMINI_MODEL
 pub static GEMINI_PROMPT: Lazy<String> =
     Lazy::new(|| std::env::var("GEMINI_SYSTEM_PROMPT").unwrap());
 
-pub struct Data;
+pub struct Data {
+    gemini_client: GeminiClient,
+}
 
 async fn context_location(ctx: Context<'_>) -> String {
     if let Some(guild) = ctx.partial_guild().await {
@@ -159,7 +162,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
                 ctx.set_presence(Some(ActivityData::listening("♡")), OnlineStatus::Online);
                 twink::purr!("logged in as <bold><purple>@{}</>", ready.user.tag());
-                Ok(Data)
+
+                let gemini_client = GeminiClient::new(
+                    GEMINI_KEY.clone(),
+                    None,
+                    Some(GEMINI_PROMPT.clone()),
+                    "wisp".to_owned(),
+                );
+                let data = Data { gemini_client };
+                Ok(data)
             })
         })
         .build();
