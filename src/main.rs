@@ -128,7 +128,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 misc::spotify::spotify_ctx(),
                 misc::cute::cute(),
                 misc::faye::faye(),
-                misc::gemini::ask(),
+                misc::gemini::wisp(),
                 misc::gemini::generate(),
                 misc::wolfram::wolfram(),
                 misc::user::user(),

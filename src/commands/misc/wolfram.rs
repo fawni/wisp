@@ -18,7 +18,7 @@ pub async fn wolfram(
     query: String,
 ) -> Result<(), Error> {
     ctx.defer().await?;
-    let answer = Wolfram::ask(query).await?;
+    let answer = Wolfram::query(query).await?;
 
     ctx.send(CreateReply::default().content(format!("```{answer}```")))
         .await?;

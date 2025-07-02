@@ -2,7 +2,7 @@ use poise::{serenity_prelude::CreateAttachment, CreateReply};
 
 use crate::{sources::gemini::GeminiClient, Context, Error, GEMINI_KEY, GEMINI_PROMPT};
 
-/// Ask Gemini AI
+/// Ask or chat with an LLM
 #[poise::command(
     prefix_command,
     slash_command,
@@ -12,7 +12,7 @@ use crate::{sources::gemini::GeminiClient, Context, Error, GEMINI_KEY, GEMINI_PR
     install_context = "Guild|User",
     interaction_context = "Guild|BotDm|PrivateChannel"
 )]
-pub async fn ask(
+pub async fn wisp(
     ctx: Context<'_>,
     #[rest]
     #[description = "Question to ask"]
