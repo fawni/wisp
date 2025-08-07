@@ -133,6 +133,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 misc::faye::faye(),
                 misc::gemini::wisp(),
                 misc::gemini::generate(),
+                misc::tts::tts(),
                 misc::wolfram::wolfram(),
                 misc::user::user(),
                 misc::user::user_info_ctx(),
