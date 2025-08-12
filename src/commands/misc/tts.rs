@@ -1,4 +1,4 @@
-use poise::serenity_prelude::{CreateAttachment, CreateEmbed, Message};
+use poise::serenity_prelude::{CreateAttachment, Message};
 use poise::CreateReply;
 
 use crate::sources::tts::{self, Voice};
@@ -59,6 +59,7 @@ pub async fn tts_ctx(ctx: Context<'_>, message: Message) -> Result<(), Error> {
 async fn run_tts(ctx: Context<'_>, text: String, voice: String) -> Result<(), Error> {
     ctx.defer().await?;
 
+    #[allow(deprecated)]
     let data = base64::decode(tts::generate(&text, &voice).await?)?;
     ctx.send(
         CreateReply::default().attachment(CreateAttachment::bytes(data, format!("{text}.mp3"))),
