@@ -35,7 +35,10 @@ pub async fn run_chars(ctx: Context<'_>, text: String) -> Result<(), Error> {
     let mut content = String::new();
 
     for (c, name) in get_unicode_name(&text).await {
-        content.push_str(&format!("`{ZWSP} {c} {ZWSP}` {name}\n", ZWSP = "\u{200B}"));
+        content.push_str(&format!(
+            "``{ZWSP} {c} {ZWSP}`` {name}\n",
+            ZWSP = "\u{200B}"
+        ));
     }
 
     ctx.reply(content).await?;
