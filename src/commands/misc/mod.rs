@@ -1,4 +1,5 @@
 pub mod avatar;
+pub mod chars;
 pub mod cute;
 pub mod faye;
 pub mod gemini;
