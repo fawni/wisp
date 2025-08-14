@@ -14,7 +14,9 @@ use crate::{sources::unicode::get_unicode_name, Context, Error};
 )]
 pub async fn chars(
     ctx: Context<'_>,
-    #[description = "Text to inspect its characters"] text: String,
+    #[rest]
+    #[description = "Text to inspect its characters"]
+    text: String,
 ) -> Result<(), Error> {
     ctx.defer().await?;
     run_chars(ctx, text).await?;
